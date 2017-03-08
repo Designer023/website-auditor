@@ -1,4 +1,5 @@
 import httplib
+import socket
 import urllib2
 
 
@@ -14,7 +15,7 @@ class HTMLImporter(object):
     def import_html(self):
         request = self.url
         try:
-            response = urllib2.urlopen(request)
+            response = urllib2.urlopen(request, timeout=30)
             self.response_header = response.info()
             self.html_data = response.read()
             response.close()
@@ -23,6 +24,9 @@ class HTMLImporter(object):
             self.error = True
         except urllib2.URLError, e:
             print ('URLError = ' + str(e.reason))
+            self.error = True
+        except socket.timeout:
+            print "socket timeout"
             self.error = True
         except httplib.HTTPException, e:
             print ('HTTPException')

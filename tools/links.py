@@ -6,12 +6,13 @@ class LinkParser(object):
         soup = BeautifulSoup(html, 'html5lib')
 
         links = []
+        hash = '#'
 
         for link in soup.find_all('a', href=True):
             if link.has_attr('href'):
-                # Strip href
-                if link['href'] != '#' and link['href'] != '':
-                    links.append(link['href'])
+                if not hash in link['href']:
+                    if link['href'] != '' and link['href'] != '/':
+                        links.append(link['href'])
 
         unique_links = []
 
