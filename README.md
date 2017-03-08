@@ -2,6 +2,7 @@
 
 brew install tidy-html5
 
+brew install phantomjs
 
 setup a virtualenvironment (preferable)
 

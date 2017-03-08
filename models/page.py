@@ -14,6 +14,7 @@ class Page(peewee.Model):
     page_meta = peewee.TextField()
     page_links = peewee.TextField()
     starting_url = peewee.CharField()
+    yslow_results = peewee.TextField()
 
     class Meta:
         database = MySQLDatabase(
@@ -46,6 +47,7 @@ class PageItem(object):
         page_meta = page_data['page_meta']
         page_links = page_data['page_links']
         starting_url = page_data['starting_url']
+        yslow_results = page_data['yslow_results']
 
 
         item = Page(url=url,
@@ -54,7 +56,8 @@ class PageItem(object):
                     html_errors=html_errors,
                     page_meta=page_meta,
                     page_links=page_links,
-                    starting_url=starting_url)
+                    starting_url=starting_url,
+                    yslow_results=yslow_results)
         item.save()
 
     def upsert(self, page_data):
@@ -70,6 +73,7 @@ class PageItem(object):
             page.page_meta = page_data['page_meta']
             page.page_links = page_data['page_links']
             page.starting_url = page_data['starting_url']
+            page.yslow_results = page_data['yslow_results']
 
             page.save()
         except:
@@ -92,7 +96,8 @@ class PageItem(object):
                 'html_errors': ast.literal_eval(item.html_errors),
                 'page_meta': ast.literal_eval(item.page_meta),
                 'page_links': ast.literal_eval(item.page_links),
-                'starting_url': item.starting_url
+                'starting_url': item.starting_url,
+                'yslow_results': item.yslow_results
             })
 
         return {'pages': pages_list}

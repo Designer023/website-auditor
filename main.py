@@ -2,6 +2,8 @@ import argparse
 import json
 import uuid
 
+import time
+
 from models.page import PageItem
 from models.backlog import BacklogItem
 
@@ -9,6 +11,7 @@ from tools.html_importer import HTMLImporter
 from tools.links import LinkParser
 from tools.meta import MetaParser
 from tools.validation import Validator
+from tools.yslow import generate_yslow
 
 with open('tidy-options.json') as data_file:
     validator_options = json.load(data_file)
@@ -56,6 +59,8 @@ def analyse_pages(url, depth):
         link_parser = LinkParser()
         page_data['page_links'] = link_parser.parse_links(parsed_html.html_data)
 
+        page_data['yslow_results'] = generate_yslow(url)
+
         # Save data to DB
         html_page = PageItem()
         html_page.upsert(page_data)
@@ -84,6 +89,9 @@ while backlog_item.count() > 0:
 
     backlog_item.popFirst()
     print "Removed: " +  next_page.url
+
+    # Slow things down a bit - Nicer on the server
+    time.sleep(5)
 
 
 
