@@ -10,3 +10,8 @@ class MetaParser(object):
             page_meta.append(tag)
 
         return page_meta
+
+    def parse_title(self, html):
+        soup = BeautifulSoup(html, 'html5lib')
+
+        return soup.title.string
