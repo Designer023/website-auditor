@@ -1,3 +1,5 @@
+import ast
+
 import peewee
 from peewee import *
 
@@ -11,6 +13,8 @@ class Page(peewee.Model):
     html_errors = peewee.TextField()
     page_meta = peewee.TextField()
     page_links = peewee.TextField()
+    starting_url = peewee.CharField()
+    session_uuid = peewee.CharField()
 
     class Meta:
         database = MySQLDatabase(
@@ -42,17 +46,54 @@ class PageItem(object):
         html_errors = page_data['html_errors']
         page_meta = page_data['page_meta']
         page_links = page_data['page_links']
+        starting_url = page_data['starting_url']
+
 
         item = Page(url=url,
                     title=title,
                     header=header,
                     html_errors=html_errors,
                     page_meta=page_meta,
-                    page_links=page_links)
+                    page_links=page_links,
+                    starting_url=starting_url)
         item.save()
+
+    def upsert(self, page_data):
+        try:
+            # Update existing
+            page = Page.get(Page.url==page_data['url'])
+
+            # update value with new value
+            page.url = page_data['url']
+            page.title = page_data['title']
+            page.header = page_data['header']
+            page.html_errors = page_data['html_errors']
+            page.page_meta = page_data['page_meta']
+            page.page_links = page_data['page_links']
+            page.starting_url = page_data['starting_url']
+
+            page.save()
+        except:
+            # Create new status entry
+            self.add(page_data)
+
 
     def count(self):
         return QueuedItem.select().count()
 
+    def getPages(self):
+        pages_list = list()
 
-        return queue_list
+        for item in Page.select():
+            pages_list.append({
+                'id': item.id,
+                'url':item.url,
+                'title': item.title,
+                'header': item.header,
+                'html_errors': ast.literal_eval(item.html_errors),
+                'page_meta': ast.literal_eval(item.page_meta),
+                'page_links': ast.literal_eval(item.page_links),
+                'starting_url': item.starting_url
+            })
+
+        return {'pages': pages_list}

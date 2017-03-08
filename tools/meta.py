@@ -7,7 +7,7 @@ class MetaParser(object):
 
         page_meta = []
         for tag in soup.find_all("meta"):
-            page_meta.append(tag)
+            page_meta.append(str(tag))
 
         return page_meta
 

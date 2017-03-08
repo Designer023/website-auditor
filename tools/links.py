@@ -9,15 +9,21 @@ class LinkParser(object):
 
         for link in soup.find_all('a', href=True):
             if link.has_attr('href'):
-                if link['href'] != '#':
+                # Strip href
+                if link['href'] != '#' and link['href'] != '':
                     links.append(link['href'])
-        # clean links
-        clean_list = list(set(links))
+
+        unique_links = []
+
+        for i in links:
+            if i not in unique_links:
+                unique_links.append(i)
+
         query_params = []
         external_links = []
         internal_links = []
 
-        for link in clean_list:
+        for link in unique_links:
 
             try:
                 # Look for links with an external protocol on
