@@ -1,22 +1,15 @@
 import argparse
-
-import urllib2
-from tidylib import tidy_document
-from bs4 import BeautifulSoup
 import json
-
 
 from models.page import PageItem
 
+from tools.html_importer import HTMLImporter
 from tools.links import LinkParser
-link_parser = LinkParser()
-
 from tools.meta import MetaParser
+from tools.validation import Validator
 
-meta_parser = MetaParser()
-
-html_page = PageItem()
-
+with open('tidy-options.json') as data_file:
+    options = json.load(data_file)
 
 parser = argparse.ArgumentParser(description='Scan a url for code validation')
 parser.add_argument('-u', '--url', default='http://localhost:8000', type=str)
@@ -25,41 +18,27 @@ args = parser.parse_args()
 
 print ("Scanning url %s and links %i deep...") % (args.url, args.depth)
 
-page_data = {}
-
 url = args.url
+parsed_html = HTMLImporter(url)
+
+# Create an object with the details we want to save
+page_data = {}
 page_data['url'] = url
 
-response = urllib2.urlopen(url)
+page_data['header'] = parsed_html.response_header
 
-header = response.info()
-page_data['header'] = header
+html_validator = Validator()
+page_data['html_errors'] = html_validator.validate_html(parsed_html.html_data)
 
-html = response.read()
-response.close()
+meta_parser = MetaParser()
+page_data['page_meta'] = meta_parser.parse_meta(parsed_html.html_data)
 
-data = {}
-with open('tidy-options.json') as data_file:
-    data = json.load(data_file)
+link_parser = LinkParser()
+page_data['page_links'] = link_parser.parse_links(parsed_html.html_data)
 
-
-document, errors = tidy_document(html,
-    options=data)
-# print document
-#print errors
-
-page_data['html_errors'] = errors.splitlines()
-
-
-soup = BeautifulSoup(html, 'html5lib')
-
-page_data['title'] = soup.title.string
-
-
-page_data['page_meta'] = meta_parser.parse_meta(html)
-page_data['page_links'] = link_parser.parse_links(html)
-
-
-
+#Save data to DB
+html_page = PageItem()
 html_page.add(page_data)
+
+#Let the user know!
 print ("Scanning done!")
