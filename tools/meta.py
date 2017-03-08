@@ -14,4 +14,7 @@ class MetaParser(object):
     def parse_title(self, html):
         soup = BeautifulSoup(html, 'html5lib')
 
-        return soup.title.string
+        try:
+            return soup.title.string
+        except AttributeError:
+            return ''

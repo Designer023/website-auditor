@@ -63,56 +63,36 @@ class Results extends Component {
 
             return (
 
-                <div key={result.id}>
-                    <h3>{result.starting_url}</h3>
-                    <div>
-                        <pre dangerouslySetInnerHTML={{__html: result.header}}></pre>
 
-                        <table className="table table-striped">
-                            <thead className="thead-inverse">
-                                <tr>
-                                    <th>
-                                        URL
-                                    </th>
-                                    <th>
-                                        Current url
-                                    </th>
-                                    <th>
-                                        Page title
-                                    </th>
-                                    <th>
-                                        Internal links
-                                    </th>
-                                    <th>
-                                        Validation Errors
-                                    </th>
-                                </tr>
-                            </thead>
 
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        {result.starting_url}
-                                    </td>
-                                    <td>
-                                        {result.url}
-                                    </td>
-                                    <td>
-                                        {result.title}
-                                    </td>
 
-                                    <td>
-                                        { result.page_links.internal.length}
-                                    </td>
 
-                                    <td>
-                                        {result.html_errors.length}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <tr key={result.id}>
+                    {/*<td>*/}
+                        {/*{result.starting_url}*/}
+                    {/*</td>*/}
+                    <td>
+                        {result.url}
+                    </td>
+                    <td>
+                        {result.title}
+                    </td>
+
+                    <td>
+                        { result.page_links.internal.length}
+                    </td>
+
+                    <td>
+                        {result.html_errors.length}
+                    </td>
+
+                    {/*<td>*/}
+                        {/*<pre dangerouslySetInnerHTML={{__html: result.header}}></pre>*/}
+                    {/*</td>*/}
+                </tr>
+
+
+
 
 
             )
@@ -123,9 +103,35 @@ class Results extends Component {
         return (
             <div>
                 <h2>Webpage Audit Results</h2>
-                <ul>
-                    {tweets}
-                </ul>
+                <table className="table table-striped">
+                    <thead className="thead-inverse">
+                        <tr>
+                            {/*<th>*/}
+                                {/*URL*/}
+                            {/*</th>*/}
+                            <th>
+                                Current url
+                            </th>
+                            <th>
+                                Page title
+                            </th>
+                            <th>
+                                Internal links
+                            </th>
+                            <th>
+                                Validation Errors
+                            </th>
+                            {/*<th>*/}
+                                {/*Headers*/}
+                            {/*</th>*/}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {tweets}
+                    </tbody>
+                </table>
+
                 <LoadingIndicator loading={this.state.loading} />
             </div>
         )

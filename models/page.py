@@ -8,7 +8,7 @@ from settings.settings import *
 
 class Page(peewee.Model):
     url = peewee.CharField()
-    title = peewee.CharField()
+    title = peewee.TextField()
     header = peewee.TextField()
     html_errors = peewee.TextField()
     page_meta = peewee.TextField()
@@ -78,7 +78,7 @@ class PageItem(object):
 
 
     def count(self):
-        return QueuedItem.select().count()
+        return PageItem.select().count()
 
     def getPages(self):
         pages_list = list()

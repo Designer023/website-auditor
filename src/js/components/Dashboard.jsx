@@ -8,7 +8,7 @@ class Dashboard extends Component {
     render() {
 
         return (
-            <div className="container">
+            <div className="container-fluid">
                  <div>
                      <Results />
                 </div>

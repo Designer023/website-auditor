@@ -3,6 +3,7 @@ import json
 import uuid
 
 from models.page import PageItem
+from models.backlog import BacklogItem
 
 from tools.html_importer import HTMLImporter
 from tools.links import LinkParser
@@ -14,7 +15,7 @@ with open('tidy-options.json') as data_file:
 
 parser = argparse.ArgumentParser(description='Scan a url for code validation')
 parser.add_argument('-u', '--url', default='http://localhost:8000', type=str)
-parser.add_argument('-d', '--depth', default=0, type=int)
+parser.add_argument('-d', '--depth', default=2, type=int)
 args = parser.parse_args()
 
 print ("Scanning url %s and links %i deep...") % (args.url, args.depth)
@@ -30,65 +31,61 @@ max_depth = args.depth
 url = starting_url
 
 
-def analyse_pages(url):
+def analyse_pages(url, depth):
 
     parsed_html = HTMLImporter(url)
     parsed_html.import_html()
 
-    page_data = {}
+    if not parsed_html.error:
 
-    page_data['starting_url'] = starting_url
-    page_data['url'] = url
+        page_data = {}
 
-    page_data['header'] = parsed_html.response_header
+        page_data['starting_url'] = starting_url
+        page_data['url'] = url
 
-    html_validator = Validator(validator_options)
-    page_data['html_errors'] = html_validator.validate_html(
-        parsed_html.html_data)
+        page_data['header'] = parsed_html.response_header
 
-    meta_parser = MetaParser()
-    page_data['page_meta'] = meta_parser.parse_meta(parsed_html.html_data)
-    page_data['title'] = meta_parser.parse_title(parsed_html.html_data)
+        html_validator = Validator(validator_options)
+        page_data['html_errors'] = html_validator.validate_html(
+            parsed_html.html_data)
 
-    link_parser = LinkParser()
-    page_data['page_links'] = link_parser.parse_links(parsed_html.html_data)
+        meta_parser = MetaParser()
+        page_data['page_meta'] = meta_parser.parse_meta(parsed_html.html_data)
+        page_data['title'] = meta_parser.parse_title(parsed_html.html_data)
 
-    for link in page_data['page_links']['internal']:
-        print link
+        link_parser = LinkParser()
+        page_data['page_links'] = link_parser.parse_links(parsed_html.html_data)
 
-    # Save data to DB
-    html_page = PageItem()
-    html_page.upsert(page_data)
+        # Save data to DB
+        html_page = PageItem()
+        html_page.upsert(page_data)
+
+        # Loop on the next set of links 1 deeper
+        depth += 1
+        for link in page_data['page_links']['internal']:
+            # clean base url and append it to the links
+            url_to_test = "%s%s" % (starting_url.rstrip('/'), link)
+            backlog_item = BacklogItem()
+            backlog_item.upsert(url_to_test, starting_url, session_uuid, depth)
 
 
-analyse_pages(url)
+
+backlog_item = BacklogItem()
+backlog_item.upsert(url, starting_url, session_uuid, 0)
 
 
-#
-# def recursiveUrl(url,depth):
-#
-#     if depth == 2:
-#         return url
-#     else:
-#         page=urllib2.urlopen(url)
-#         soup = BeautifulSoup(page.read(), "html5lib")
-#         newlink = soup.find('a') # find just the first one
-#         if len(newlink) == 0:
-#             return url
-#         else:
-#             return url, recursiveUrl(newlink,depth+1)
-#
-#
-# def getLinks(url):
-#     page=urllib2.urlopen(url)
-#     soup = BeautifulSoup(page.read(), "html5lib")
-#     links = soup.find_all('a', {'class':'site-footer__about-link'})
-#     for link in links:
-#         links.append(recursiveUrl(link,0))
-#     return links
-#
-# links = getLinks(url)
-# print links
+while backlog_item.count() > 0:
+    next_page = backlog_item.first()
+    if next_page.depth >= max_depth:
+        break
+
+    print "Scanning: " + next_page.url
+    analyse_pages(next_page.url, next_page.depth)
+
+    backlog_item.popFirst()
+    print "Removed: " +  next_page.url
+
+
 
 #Let the user know!
 print ("Scanning done!")
