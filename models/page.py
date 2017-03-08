@@ -14,7 +14,6 @@ class Page(peewee.Model):
     page_meta = peewee.TextField()
     page_links = peewee.TextField()
     starting_url = peewee.CharField()
-    session_uuid = peewee.CharField()
 
     class Meta:
         database = MySQLDatabase(
