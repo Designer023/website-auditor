@@ -2,6 +2,7 @@ import time
 
 from models.page import PageItem
 from models.backlog import BacklogItem
+from models.visited_log import VisitedItem
 
 from .html_importer import HTMLImporter
 from .links import LinkParser
@@ -18,6 +19,7 @@ class Analyser(object):
     max_depth = 0
     validator_options = {}
     analyse_performance = False
+    visited_manager = VisitedItem()
 
     def __init__(self, url, starting_url, session_uuid, max_depth, validator_options):
         self.url = url
@@ -64,12 +66,25 @@ class Analyser(object):
 
             # Loop on the next set of links 1 deeper
             depth += 1
+
+
             for link in page_data['page_links']['internal']:
                 # clean base url and append it to the links
                 url_to_test = "%s%s" % (self.starting_url.rstrip('/'), link)
-                backlog_item = BacklogItem()
-                backlog_item.upsert(url_to_test, self.starting_url, self.session_uuid,
-                                    depth)
+
+                # Check if the item has already been scanned this session in
+                # in the visted_log
+                visited_this_session = self.visited_manager.visited_this_session(url_to_test, self.session_uuid);
+
+                # If its not in the visited list then add it to the queue!
+                if visited_this_session is False:
+                    backlog_item = BacklogItem()
+                    backlog_item.upsert(
+                        url_to_test,
+                        self.starting_url,
+                        self.session_uuid,
+                        depth
+                    )
 
     def start(self):
         # Add the initial item to the backlog so there is something to process
@@ -89,6 +104,9 @@ class Analyser(object):
 
             backlog_item.pop_first_session(self.session_uuid)
             print "Removed: " + next_page.url
+
+            self.visited_manager.add(next_page.url, self.session_uuid)
+            print "Added to visited list"
 
             print "Sleeping for a moment..."
             # Slow things down a bit - Nicer on the server

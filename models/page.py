@@ -8,13 +8,13 @@ from settings.settings import *
 
 class Page(peewee.Model):
     url = peewee.CharField()
-    title = peewee.TextField()
+    title = peewee.TextField(null = True)
     header = peewee.TextField()
-    html_errors = peewee.TextField()
-    page_meta = peewee.TextField()
-    page_links = peewee.TextField()
+    html_errors = peewee.TextField(null = True)
+    page_meta = peewee.TextField(null = True)
+    page_links = peewee.TextField(null = True)
     starting_url = peewee.CharField()
-    yslow_results = peewee.TextField()
+    yslow_results = peewee.TextField(null = True)
 
     class Meta:
         database = MySQLDatabase(

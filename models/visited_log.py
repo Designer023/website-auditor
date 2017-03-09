@@ -28,8 +28,16 @@ except:
 
 
 
-class VisitedgItem(object):
+class VisitedItem(object):
 
+    def visited_this_session(self, url, session_uuid):
+        has_visited = Visited.select(
+            Visited.url==url,
+            Visited.session_uuid==session_uuid).count()
+
+        if has_visited != 0:
+            return True
+        return False
 
     def add(self, url, session_uuid):
 
@@ -48,13 +56,13 @@ class VisitedgItem(object):
             # Create new status entry
             self.add(url, session_uuid)
 
-    def count(self):
-        return Visited.select().count(Visited.session_uuid==session_uuid)
-
-    def first(self):
-        data = Visited.select().get(Visited.session_uuid==session_uuid)
-        return data
-
-    def popFirst(self):
-        first = Visited.select().get(Visited.session_uuid==session_uuid)
-        first.delete_instance()
+    # def count(self):
+    #     return Visited.select().count(Visited.session_uuid==session_uuid)
+    #
+    # def first(self):
+    #     data = Visited.select().get(Visited.session_uuid==session_uuid)
+    #     return data
+    #
+    # def popFirst(self):
+    #     first = Visited.select().get(Visited.session_uuid==session_uuid)
+    #     first.delete_instance()
