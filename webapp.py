@@ -1,10 +1,17 @@
 #!flask/bin/python
+import json
+
 from settings.settings import *
 from flask import Flask, jsonify, render_template, send_from_directory, request, Response
 
 from models.page import PageItem
 
 # Setup Flask App
+from tools.analyser import Analyser
+
+with open('tidy-options.json') as data_file:
+    validator_options = json.load(data_file)
+
 app = Flask(__name__, static_url_path = "/static", static_folder = "static")
 
 
@@ -35,9 +42,20 @@ def get_detail_for_page(page_id):
 @app.route('/api/v1.0/auditor/yslow/<path:page_id>', methods=['GET'])
 def update_yslow_for_page(page_id):
 
+    pages = PageItem()
+    page_data = pages.get_page_data(page_id)
+
+    analyser = Analyser(page_data['url'],
+                        page_data['starting_url'],
+                        0,
+                        0,
+                        validator_options)
+
+    analyser.generate_yslow()
+
 
     # Get the generated updated data
-    pages = PageItem()
+
     page_data = pages.get_page_data(page_id)
 
     data = {}

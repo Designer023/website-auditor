@@ -13,7 +13,8 @@ class SessionDetailDash extends Component {
             data: []
         }
 
-       this.getData = this.getData.bind(this);
+        this.getData = this.getData.bind(this);
+        this.getYSlow = this.getYSlow.bind(this);
     }
 
     componentDidMount() {
@@ -97,7 +98,7 @@ class SessionDetailDash extends Component {
             return (
                 <div className="container-fluid">
                     <div>
-                        <h2>Details for {this.props.params.session_id}</h2>
+                        <h2>Updating</h2>
                         <LoadingIndicator />
                     </div>
                 </div>
@@ -126,11 +127,40 @@ class SessionDetailDash extends Component {
 
 
 
-            let generate_yslow_button = (<p>No YSlow data generated</p>);
-            if (this.state.data.yslow_results.length == 0) {
+            let generate_yslow_button = (
+                <span className="btn btn-primary btn-lg" onClick={this.getYSlow} role="button">Generate YSlow analysis</span>
+            );
+
+            let yslow_data = ( null );
+
+            if (this.state.data.yslow_results  !== "" ) {
                 generate_yslow_button =  (
-                    <a className="btn btn-primary btn-lg" href="#" role="button">Generate YSlow analysis</a>
+                    null
                 )
+
+                yslow_data = (
+                    <table className="table table-striped">
+                        <thead className="thead-inverse">
+                            <tr>
+                                <th>
+                                    Yslow
+                                </th>
+                            </tr>
+                        </thead>
+                         <tbody>
+                            <tr >
+                                <td>Score: {this.state.data.yslow_results.score}</td>
+                            </tr>
+                            <tr>
+                                <td>Pagesize: {Math.round(this.state.data.yslow_results.size / 1024 / 1024* 100) / 100 + ' Mb'}</td>
+                            </tr>
+                            <tr>
+                                <td>Load time: {this.state.data.yslow_results.load_time / 1000 + ' seconds'}</td>
+                            </tr>
+                         </tbody>
+                    </table>
+                    )
+
             }
 
             return (
@@ -143,6 +173,7 @@ class SessionDetailDash extends Component {
 
 
                                     <h3 className="lead">{this.state.data.title}</h3>
+                                    <h4>Session uuid: {this.state.data.session_uuid}</h4>
 
                             </div>
 
@@ -155,8 +186,13 @@ class SessionDetailDash extends Component {
 
 
                              <h4>YSlow analytics</h4>
-
                              {generate_yslow_button}
+
+
+
+                                {yslow_data}
+
+
 
                              <h4>HTML errors</h4>
 

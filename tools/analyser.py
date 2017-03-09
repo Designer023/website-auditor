@@ -28,10 +28,13 @@ class Analyser(object):
         self.max_depth = max_depth
         self.validator_options = validator_options
 
-    def update_yslow(self):
-        yslow_data = generate_yslow(url)
+
+    def generate_yslow(self):
+        yslow_results = generate_yslow(self.url)
+
         html_page = PageItem()
-        html_page.update_yslow(yslow_data)
+        html_page.update_yslow(self.url, yslow_results)
+
 
     def analyse_pages(self, url, depth):
 

@@ -16,6 +16,7 @@ class Page(peewee.Model):
     starting_url = peewee.CharField()
     yslow_results = peewee.TextField(null = True)
 
+
     class Meta:
         database = MySQLDatabase(
             database_table,
@@ -108,6 +109,16 @@ class PageItem(object):
 
         return {'pages': pages_list}
 
+    def update_yslow(self, url, yslow_results):
+        try:
+            page = Page.get(Page.url == url)
+            page.yslow_results = yslow_results
+            page.save()
+        except:
+            pass
+
+
+
     def get_page_data(self, id):
         try:
 
@@ -124,7 +135,7 @@ class PageItem(object):
             try:
                 yslow_results = ast.literal_eval(page.yslow_results)
             except:
-                yslow_results = []
+                yslow_results = ''
 
             page_data['url'] = page.url
             page_data['starting_url'] = page.starting_url
