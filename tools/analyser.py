@@ -26,7 +26,12 @@ class Analyser(object):
         self.starting_url = starting_url
         self.session_uuid = session_uuid
         self.max_depth = max_depth
+        self.validator_options = validator_options
 
+    def update_yslow(self):
+        yslow_data = generate_yslow(url)
+        html_page = PageItem()
+        html_page.update_yslow(yslow_data)
 
     def analyse_pages(self, url, depth):
 

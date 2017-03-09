@@ -107,3 +107,36 @@ class PageItem(object):
             })
 
         return {'pages': pages_list}
+
+    def get_page_data(self, id):
+        try:
+
+            page = Page.get(Page.id == id)
+
+            page_data = {}
+
+
+            try:
+                page_meta = ast.literal_eval(page.page_meta)
+            except:
+                page_meta = []
+
+            try:
+                yslow_results = ast.literal_eval(page.yslow_results)
+            except:
+                yslow_results = []
+
+            page_data['url'] = page.url
+            page_data['starting_url'] = page.starting_url
+            page_data['header'] = page.header
+            page_data['title'] = page.title
+            page_data['html_errors'] = ast.literal_eval(page.html_errors)
+            page_data['page_meta'] = page_meta
+            page_data['page_links'] = ast.literal_eval(page.page_links)
+            page_data['yslow_results'] = yslow_results
+
+            return page_data
+
+        except:
+            return "No Page found"
+

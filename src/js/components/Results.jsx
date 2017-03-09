@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import { Link } from 'react-router'
+
 import $ from 'jquery';
 
 import LoadingIndicator from './LoadingIndicator';
@@ -72,7 +74,7 @@ class Results extends Component {
                         {/*{result.starting_url}*/}
                     {/*</td>*/}
                     <td>
-                        {result.url}
+                        <Link to={"/session/" + result.id } >{result.url}</Link>
                     </td>
                     <td>
                         {result.title}
@@ -93,8 +95,6 @@ class Results extends Component {
 
 
 
-
-
             )
 
         });
@@ -102,7 +102,13 @@ class Results extends Component {
 
         return (
             <div>
-                <h2>Webpage Audit Results</h2>
+                <div className="jumbotron">
+                      <h1 className="display-3">Webpage Audit Results</h1>
+                      <hr className="my-4" />
+                      <p className="lead">
+                        {this.state.tweets.length} Pages audited
+                      </p>
+                </div>
                 <table className="table table-striped">
                     <thead className="thead-inverse">
                         <tr>
