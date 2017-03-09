@@ -9,18 +9,30 @@ app = Flask(__name__, static_url_path = "/static", static_folder = "static")
 
 
 # Setup the routes for Flask
-@app.route('/')
-def root():
-    return render_template('index.html')
 
+# API
 
-@app.route('/auditor/api/v1.0/results', methods=['GET'])
+@app.route('/api/v1.0/auditor/results', methods=['GET'])
 def get_status():
 
     pages = PageItem()
     pages_list = pages.getPages()
 
     return jsonify(pages_list)
+
+
+
+# CATCH ALL FOR FRONTEND
+
+@app.route('/')
+def root():
+    return render_template('index.html')
+
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    return render_template('index.html')
 
 
 if __name__ == '__main__':

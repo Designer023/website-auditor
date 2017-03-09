@@ -47,7 +47,7 @@ class PageItem(object):
         page_meta = page_data['page_meta']
         page_links = page_data['page_links']
         starting_url = page_data['starting_url']
-        yslow_results = page_data['yslow_results']
+        yslow_results = getattr(page_data, 'yslow_results', None)
 
 
         item = Page(url=url,
@@ -73,7 +73,7 @@ class PageItem(object):
             page.page_meta = page_data['page_meta']
             page.page_links = page_data['page_links']
             page.starting_url = page_data['starting_url']
-            page.yslow_results = page_data['yslow_results']
+            page.yslow_results = getattr(page_data, 'yslow_results', None)
 
             page.save()
         except:

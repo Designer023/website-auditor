@@ -3,4 +3,3 @@ settings/settings.py
 *.pyc
 node_modules/
 static/
-*.pyc
