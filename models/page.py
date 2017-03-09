@@ -88,13 +88,19 @@ class PageItem(object):
         pages_list = list()
 
         for item in Page.select():
+
+            try:
+                page_meta = ast.literal_eval(item.page_meta)
+            except:
+                page_meta = []
+
             pages_list.append({
                 'id': item.id,
                 'url':item.url,
                 'title': item.title,
                 'header': item.header,
                 'html_errors': ast.literal_eval(item.html_errors),
-                'page_meta': ast.literal_eval(item.page_meta),
+                'page_meta': page_meta,
                 'page_links': ast.literal_eval(item.page_links),
                 'starting_url': item.starting_url,
                 'yslow_results': item.yslow_results
