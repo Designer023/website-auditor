@@ -37,7 +37,7 @@ class Results extends Component {
                 }
             );
 
-            let queue_end_point = '/auditor/api/v1.0/results';
+            let queue_end_point = '/api/v1.0/auditor/results';
 
             $.ajax({
                 type: 'GET',
