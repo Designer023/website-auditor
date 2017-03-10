@@ -2,8 +2,6 @@ import argparse
 import json
 import uuid
 
-import datetime
-
 from tools.analyser import Analyser
 
 with open('tidy-options.json') as data_file:
