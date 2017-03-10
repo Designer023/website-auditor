@@ -8,6 +8,7 @@ from settings.settings import *
 
 class Page(peewee.Model):
     url = peewee.CharField()
+    session_uuid = peewee.CharField()
     title = peewee.TextField(null = True)
     header = peewee.TextField()
     html_errors = peewee.TextField(null = True)
@@ -24,7 +25,7 @@ class Page(peewee.Model):
             passwd=database_password
         )
         indexes = (
-            (('url'), True),
+            (('url', 'session_uuid'), True),
         )
 try:
     Page.create_table()
@@ -49,6 +50,7 @@ class PageItem(object):
         page_links = page_data['page_links']
         starting_url = page_data['starting_url']
         yslow_results = getattr(page_data, 'yslow_results', None)
+        session_uuid=page_data['session_uuid']
 
 
         item = Page(url=url,
@@ -58,13 +60,14 @@ class PageItem(object):
                     page_meta=page_meta,
                     page_links=page_links,
                     starting_url=starting_url,
-                    yslow_results=yslow_results)
+                    yslow_results=yslow_results,
+                    session_uuid=session_uuid)
         item.save()
 
     def upsert(self, page_data):
         try:
             # Update existing
-            page = Page.get(Page.url==page_data['url'])
+            page = Page.get(Page.url==page_data['url'], Page.session_uuid==page_data['session_uuid'])
 
             # update value with new value
             page.url = page_data['url']
@@ -75,6 +78,7 @@ class PageItem(object):
             page.page_links = page_data['page_links']
             page.starting_url = page_data['starting_url']
             page.yslow_results = getattr(page_data, 'yslow_results', None)
+            page.session_uuid = page_data['session_uuid']
 
             page.save()
         except:
@@ -114,7 +118,8 @@ class PageItem(object):
                 'page_meta': page_meta,
                 'page_links': ast.literal_eval(item.page_links),
                 'starting_url': item.starting_url,
-                'yslow_results': yslow_results
+                'yslow_results': yslow_results,
+                'session_uuid': item.session_uuid
             })
 
         return {'pages': pages_list}
@@ -160,6 +165,7 @@ class PageItem(object):
             page_data['page_meta'] = page_meta
             page_data['page_links'] = ast.literal_eval(page.page_links)
             page_data['yslow_results'] = yslow_results
+            page_data['session_uuid'] = page.session_uuid
 
             return page_data
 

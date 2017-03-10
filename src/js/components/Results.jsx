@@ -88,6 +88,10 @@ class Results extends Component {
                         {result.html_errors.length}
                     </td>
 
+                    <td>
+                        { result.session_uuid}
+                    </td>
+
                     {/*<td>*/}
                         {/*<pre dangerouslySetInnerHTML={{__html: result.header}}></pre>*/}
                     {/*</td>*/}
@@ -126,6 +130,9 @@ class Results extends Component {
                             </th>
                             <th>
                                 Validation Errors
+                            </th>
+                            <th>
+                                Session UUID
                             </th>
                             {/*<th>*/}
                                 {/*Headers*/}

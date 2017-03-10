@@ -34,9 +34,7 @@ class VisitedItem(object):
         has_visited = Visited.select(
             Visited.url==url,
             Visited.session_uuid==session_uuid).count()
-        print '----'
-        print has_visited
-        print '----'
+
 
         if has_visited != 0:
             return True

@@ -65,11 +65,11 @@ class BacklogItem(object):
         return Backlog.select().count(Backlog.session_uuid==session_uuid)
 
     def first_session(self, session_uuid):
-        #data = Backlog.select().get(Backlog.session_uuid==session_uuid)
+        # data = Backlog.select().select(Backlog.session_uuid==session_uuid)
         data = Backlog.select().get()
         return data
 
     def pop_first_session(self, session_uuid):
-        #first = Backlog.select().get(Backlog.session_uuid==session_uuid)
+        # first = Backlog.select().select(Backlog.session_uuid==session_uuid)
         first = Backlog.select().get()
         first.delete_instance()

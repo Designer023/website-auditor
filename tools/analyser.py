@@ -46,6 +46,7 @@ class Analyser(object):
             page_data = {}
 
             page_data['starting_url'] = self.starting_url
+            page_data['session_uuid'] = self.session_uuid
             page_data['url'] = url
 
             page_data['header'] = parsed_html.response_header
@@ -75,24 +76,25 @@ class Analyser(object):
             # Loop on the next set of links 1 deeper
             depth += 1
 
+            # If this new depth doesn't exceed the max then loop through the urls for this page!
+            if depth <= self.max_depth:
+                for link in page_data['page_links']['internal']:
+                    # clean base url and append it to the links
+                    url_to_test = "%s%s" % (self.starting_url.rstrip('/'), link)
 
-            for link in page_data['page_links']['internal']:
-                # clean base url and append it to the links
-                url_to_test = "%s%s" % (self.starting_url.rstrip('/'), link)
+                    # Check if the item has already been scanned this session in
+                    # in the visted_log
+                    visited_this_session = self.visited_manager.visited_this_session(url_to_test, self.session_uuid)
 
-                # Check if the item has already been scanned this session in
-                # in the visted_log
-                visited_this_session = self.visited_manager.visited_this_session(url_to_test, self.session_uuid)
-
-                # If its not in the visited list then add it to the queue!
-                if visited_this_session is False:
-                    backlog_item = BacklogItem()
-                    backlog_item.upsert(
-                        url_to_test,
-                        self.starting_url,
-                        self.session_uuid,
-                        depth
-                    )
+                    # If its not in the visited list then add it to the queue!
+                    if visited_this_session is False:
+                        backlog_item = BacklogItem()
+                        backlog_item.upsert(
+                            url_to_test,
+                            self.starting_url,
+                            self.session_uuid,
+                            depth
+                        )
 
     def start(self):
         # Add the initial item to the backlog so there is something to process
