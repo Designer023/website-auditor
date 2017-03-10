@@ -82,7 +82,7 @@ class Analyser(object):
 
                 # Check if the item has already been scanned this session in
                 # in the visted_log
-                visited_this_session = self.visited_manager.visited_this_session(url_to_test, self.session_uuid);
+                visited_this_session = self.visited_manager.visited_this_session(url_to_test, self.session_uuid)
 
                 # If its not in the visited list then add it to the queue!
                 if visited_this_session is False:
@@ -104,7 +104,7 @@ class Analyser(object):
         while backlog_item.count_session(self.session_uuid) > 0:
             # Get first of backlog item for this session
             next_page = backlog_item.first_session(self.session_uuid)
-            if next_page.depth >= self.max_depth:
+            if next_page.depth > self.max_depth:
                 break
 
             print "Scanning: " + next_page.url

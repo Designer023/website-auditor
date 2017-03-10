@@ -2,6 +2,8 @@ import argparse
 import json
 import uuid
 
+import datetime
+
 from tools.analyser import Analyser
 
 with open('tidy-options.json') as data_file:
@@ -18,12 +20,12 @@ print ("Scanning url %s and links %i deep...") % (args.url, args.depth)
 
 # Resume session checking
 if args.session is None:
-    session_uuid = uuid.uuid3(uuid.NAMESPACE_DNS, 'python.org')
+    # Generate a uniquie timestamp based on device /
+    session_uuid = uuid.uuid1()
 else :
     session_uuid = args.session
 
 print ("Session UUID: %s") % session_uuid
-
 
 
 starting_url = args.url

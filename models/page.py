@@ -95,16 +95,26 @@ class PageItem(object):
             except:
                 page_meta = []
 
+            try:
+                yslow_results = ast.literal_eval(item.yslow_results)
+            except:
+                yslow_results = ''
+
+            try:
+                html_errors = ast.literal_eval(item.html_errors)
+            except:
+                html_errors = []
+
             pages_list.append({
                 'id': item.id,
                 'url':item.url,
                 'title': item.title,
                 'header': item.header,
-                'html_errors': ast.literal_eval(item.html_errors),
+                'html_errors': html_errors,
                 'page_meta': page_meta,
                 'page_links': ast.literal_eval(item.page_links),
                 'starting_url': item.starting_url,
-                'yslow_results': item.yslow_results
+                'yslow_results': yslow_results
             })
 
         return {'pages': pages_list}
@@ -137,11 +147,16 @@ class PageItem(object):
             except:
                 yslow_results = ''
 
+            try:
+                html_errors = ast.literal_eval(page.html_errors)
+            except:
+                html_errors = []
+
             page_data['url'] = page.url
             page_data['starting_url'] = page.starting_url
             page_data['header'] = page.header
             page_data['title'] = page.title
-            page_data['html_errors'] = ast.literal_eval(page.html_errors)
+            page_data['html_errors'] = html_errors
             page_data['page_meta'] = page_meta
             page_data['page_links'] = ast.literal_eval(page.page_links)
             page_data['yslow_results'] = yslow_results
