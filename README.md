@@ -46,9 +46,13 @@ Then edit to provide valid database name, user, and password settings.
 
 ## Run
 
-python main.py
+`python main.py -u http://localhost:8000`
 
 ## Options
+
+Resume session with depth of 3 links and do performance reviews using YSlow.
+
+`python main.py -u http://localhost:8000 -d 3 -s 33a257d4-0664-11e7-9aa7-24a074f076f8 -p`
 
 -h, --help show the help message and exit
 
