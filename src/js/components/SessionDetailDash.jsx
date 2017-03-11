@@ -155,7 +155,7 @@ class SessionDetailDash extends Component {
 
             }
 
-
+    
             return (
                 <div className="container-fluid">
                     <div className="container-fluid">
