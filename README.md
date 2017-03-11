@@ -78,9 +78,10 @@ python webapp.py
 - ~~Depth and crawling fixes~~
 - ~~Session crawling fixes (currently ignores session due to DB issues! - Peewee!)~~
 - Threading of performance (YSlow)
+- Crawls saved to db so stats and other details can be saved
 - Frontend detail pages
 - Frontend start crawl page
-- Frontend remove crawl
+- Frontend remove crawl from history
 - Frontend live updates to/from backend via SocketIO
 - ???
 - $$$
