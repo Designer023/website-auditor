@@ -29,7 +29,7 @@ except:
 class VisitedItem(object):
 
     def visited_this_session(self, url, session_uuid):
-        has_visited = Visited.select(
+        has_visited = Visited.filter(
             Visited.url==url,
             Visited.session_uuid==session_uuid).count()
 

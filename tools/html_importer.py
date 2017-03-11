@@ -32,4 +32,5 @@ class HTMLImporter(object):
             print ('HTTPException')
             self.error = True
 
+        # TODO: Save errors to DB for further analysis!
 
