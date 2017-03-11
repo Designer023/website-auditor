@@ -3,6 +3,9 @@ import json
 
 from settings.settings import *
 from flask import Flask, jsonify, render_template, send_from_directory, request, Response
+from flask_socketio import SocketIO
+from flask_socketio import send, emit
+
 
 from models.page import PageItem
 
@@ -13,9 +16,19 @@ with open('tidy-options.json') as data_file:
     validator_options = json.load(data_file)
 
 app = Flask(__name__, static_url_path = "/static", static_folder = "static")
-
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app)
 
 # Setup the routes for Flask
+
+
+# Sockets
+#
+# @socketio.on('message')
+# def handle_message(message):
+#     emit('results_updated', 'huzzah ' + str(message))
+#
+
 
 # API
 
@@ -64,6 +77,12 @@ def update_yslow_for_page(page_id):
     return jsonify(data)
 
 
+# @app.route('/ping')
+# def ping():
+#     socketio.emit( 'Hello', namespace='results_updated')
+#     return jsonify({'ping': True})
+
+
 # CATCH ALL FOR FRONTEND
 
 @app.route('/')
@@ -78,4 +97,4 @@ def catch_all(path):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, debug=True)

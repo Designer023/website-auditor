@@ -3,3 +3,5 @@ html5lib
 peewee
 mysql-python
 flask
+eventlet
+flask-socketio

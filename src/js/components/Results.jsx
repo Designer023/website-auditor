@@ -4,7 +4,15 @@ import { Link } from 'react-router'
 
 import $ from 'jquery';
 
-import LoadingIndicator from './LoadingIndicator';
+// import SocketIOClient from 'socket.io-client';
+//
+// // const io = require('socket.io-client')
+// const socket = SocketIOClient()
+
+// import io from 'socket.io-client'
+// let socket = io()// http://127.0.0.1:5000/
+//
+// import LoadingIndicator from './LoadingIndicator';
 
 class Results extends Component {
 
@@ -19,7 +27,14 @@ class Results extends Component {
         this.getTweets = this.getTweets.bind(this);
 
         //setInterval(this.getTweets, (5 * 1000));
+        this.onReceivedMessage = this.onReceivedMessage.bind(this)
 
+        // this.socket = SocketIOClient()
+        // this.socket.on('results_updated', this.onReceivedMessage);
+
+        // socket.on('results_updated', (payload) => {
+        //     console.log(payload);
+        // })
 
     }
 
@@ -27,6 +42,9 @@ class Results extends Component {
         this.getTweets();
     }
 
+    onReceivedMessage(messages) {
+        console.log( messages )
+      }
 
     getTweets() {
         if (this.state.loading === false) {
