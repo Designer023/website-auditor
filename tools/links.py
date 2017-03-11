@@ -8,6 +8,14 @@ class LinkParser(object):
         links = []
         hash = '#'
 
+        # Todo: Regex for urls - the current if/try method is crude!
+        # http(s):// that's not this site url
+        # ?querystrings
+        # external links
+        # mailto
+        # ../ - try and resolve to current url?!
+        # #hash anchors
+
         for link in soup.find_all('a', href=True):
             if link.has_attr('href'):
                 if not hash in link['href']:

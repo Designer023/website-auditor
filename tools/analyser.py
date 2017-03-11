@@ -97,11 +97,15 @@ class Analyser(object):
                             depth
                         )
 
-    def start(self):
-        # Add the initial item to the backlog so there is something to process
+    def start(self, resume_session):
+
         backlog_item = BacklogItem()
-        # We use upsert, but in theory a normal add should be fine!
-        backlog_item.upsert(self.url, self.starting_url, self.session_uuid, 0)
+
+        # If we're not resuming we better add something to start with! or there will extra scanning that happens!
+        if not resume_session:
+            # Add the initial item to the backlog so there is something to process
+            # We use upsert, but in theory a normal add should be fine!
+            backlog_item.upsert(self.url, self.starting_url, self.session_uuid, 0)
 
         # Process backlog while there are items for this session
         while backlog_item.count_session(self.session_uuid) > 0:
@@ -119,7 +123,7 @@ class Analyser(object):
             self.analyse_pages(next_page.url, next_page.depth)
 
             backlog_item.pop_first_session(self.session_uuid)
-            self.visited_manager.add(next_page.url, self.session_uuid)
+            self.visited_manager.upsert(next_page.url, self.session_uuid)
             print ("Removed: %s from the backlog and added it to the visted list") % next_page.url
 
         print "Analysis complete"

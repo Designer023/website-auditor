@@ -7,7 +7,7 @@ from settings.settings import *
 
 
 class Page(peewee.Model):
-    url = peewee.CharField()
+    url = peewee.TextField()
     session_uuid = peewee.CharField()
     title = peewee.TextField(null = True)
     header = peewee.TextField()

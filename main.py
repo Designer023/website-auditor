@@ -29,12 +29,14 @@ if __name__ == "__main__":
 
     print ("Scanning url %s and links %i deep...") % (args.url, args.depth)
 
+    resume_session = False
     # Resume session checking
     if args.session is None:
         # Generate a uniquie timestamp based on device and time /
         session_uuid = uuid.uuid1()
     else :
         session_uuid = args.session
+        resume_session = True
 
     print ("Session UUID: %s") % session_uuid
 
@@ -43,7 +45,7 @@ if __name__ == "__main__":
 
     # Start the analysis
     if args.crawl is True:
-        analyser.start()
+        analyser.start(resume_session)
 
     # Reporting
     if args.report is True:
