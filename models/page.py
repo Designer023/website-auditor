@@ -36,8 +36,6 @@ except:
 
 class PageItem(object):
 
-    def __init__(self):
-        print "PageItem initiated"
 
     def add(self, page_data):
 

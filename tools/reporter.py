@@ -13,7 +13,7 @@ class Reporter(object):
     def report(self, type):
 
         if type == 'csv':
-            print 'CSV Generating...'
+            print 'Generating CSVs...'
 
             report_files = ['reports/summary.csv', 'reports/links.csv', 'reports/errors.csv', 'reports/yslow.csv']
 
@@ -150,3 +150,4 @@ class Reporter(object):
             for link in links_external:
                 wr_link.writerow(( str(link), 'External' ))
 
+        print 'Reports created'

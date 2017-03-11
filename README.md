@@ -1,3 +1,23 @@
+# Site Auditor
+
+## About
+
+This tool is currently a WIP. The aim is to create a front end webapp that a developer can use to analyse the web pages they are creating for issues and performance enhancements. 
+
+Currently the app runs from the command line as `python main.py` (see installation notes) and will crawl the url provided to the depth provided and generate a set of reports in the reports directory.
+
+THERE ARE BUGS with with the depth crawling currently, the backlog/queue and visted log... however these are on my radar to fix ASAP. 
+
+Please feel free to submit PRs and bugs/issues, but as this is currently a WIP I may need to drop features or change direction at a short notice. There will be a roadmap in the near future.
+
+## Why
+
+I needed to audit a huge website that wan't accessible publicly. The audit was for validation, performance and SEO so I decided to create a tool that would generate what I needed so I can focus on activly improving things.
+
+There are a few tools out there that do bits of what I am after, but either they cost money, are very slow and also don't do everything that I needed in one place - so I created [another tool](https://xkcd.com/927/)!
+
+I'm also trying to learn more Python and backend bits!
+
 ## Installation
 
 brew install tidy-html5
@@ -28,17 +48,19 @@ python main.py
 
 ## Options
 
---url -u set the url to check. This defaults to 
+-h, --help show the help message and exit
 
-python main.py -u https://google.com
+-u URL, --url URL The URL to start the crawl with. 0 depth (see -d) will crawl only the input URL
 
---depth -d set how many links deep to go. Default is:
+-d DEPTH, --depth DEPTH Depth of the search when following internal links
 
-python main.py -u https://google.com -d 2
+-s SESSION, --session SESSION Resume a previous session by adding the session key
 
---analyze -a sets whether or not to analyze page load speed with yslow. Default:
+-p, --performance Run performance tools (YSlow). Because the test is slow and resource intensive, this is best done after all other metrics are passing for an audit
 
-python main.py -u https://google.com -a no
+-nr, --no-report Prevent the generate of CSVs in the report directory. Ideal if you are using the web app
+
+-nc, --no-crawl Prevent a crawl. Ideal for generating reports based on existing crawls
 
 ## View Results
 

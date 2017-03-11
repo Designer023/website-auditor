@@ -66,9 +66,9 @@ class Analyser(object):
                 parsed_html.html_data)
 
             if self.analyse_performance is True:
-                print "Analysing page with YSlow. This will take a few seconds"
+                print "Analysing page with YSlow. This will take a few seconds..."
                 page_data['yslow_results'] = generate_yslow(url)
-                print "YSlow done!"
+                print "Page analysis complete"
 
             # Save data to DB
             html_page = PageItem()
@@ -105,20 +105,21 @@ class Analyser(object):
 
         # Process backlog while there are items for this session
         while backlog_item.count_session(self.session_uuid) > 0:
+
             # Get first of backlog item for this session
             next_page = backlog_item.first_session(self.session_uuid)
             if next_page.depth > self.max_depth:
                 break
 
-            print "Scanning: " + next_page.url
+            # Slow things down a bit (throttle) - Nicer on the servers
+            print "Preparing scan..."
+            time.sleep(3)
+
+            print ("Scanning: %s") % next_page.url
             self.analyse_pages(next_page.url, next_page.depth)
 
             backlog_item.pop_first_session(self.session_uuid)
-            print "Removed: " + next_page.url
-
             self.visited_manager.add(next_page.url, self.session_uuid)
-            print "Added to visited list"
+            print ("Removed: %s from the backlog and added it to the visted list") % next_page.url
 
-            print "Sleeping for a moment..."
-            # Slow things down a bit - Nicer on the server
-            time.sleep(5)
+        print "Analysis complete"
