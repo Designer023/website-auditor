@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 
 import LoadingIndicator from './LoadingIndicator';
 
+import ResponseHeader from './ResponseHeader';
+import HTMLErrors from './HTMLErrors';
+import PageMeta from './PageMeta';
+
 import $ from 'jquery';
 
 class SessionDetailDash extends Component {
@@ -107,23 +111,11 @@ class SessionDetailDash extends Component {
 
 
 
-            let html_errors = this.state.data.html_errors.map(function(error_message, index) {
-                return (
-                    <tr key={index}>
-                        <td>{error_message}</td>
-                    </tr>
-                )
-            });
 
 
 
-            let meta_tags = this.state.data.page_meta.map(function(meta, index) {
-                return (
-                    <tr key={index}>
-                        <td>{meta}</td>
-                    </tr>
-                )
-            });
+
+
 
 
 
@@ -163,6 +155,7 @@ class SessionDetailDash extends Component {
 
             }
 
+
             return (
                 <div className="container-fluid">
                     <div className="container-fluid">
@@ -177,16 +170,14 @@ class SessionDetailDash extends Component {
 
                             </div>
 
+                             <ResponseHeader header_data={this.state.data.header} />
 
-                             <h4>Response header</h4>
-
-                            <pre>
-                                {this.state.data.header}
-                            </pre>
-
-
-                             <h4>YSlow analytics</h4>
-                             {generate_yslow_button}
+                             <div className="card mt-5">
+                                <div className="card-block">
+                                     <h4>YSlow analytics</h4>
+                                     {generate_yslow_button}
+                                </div>
+                             </div>
 
 
 
@@ -194,42 +185,9 @@ class SessionDetailDash extends Component {
 
 
 
-                             <h4>HTML errors</h4>
+                             <HTMLErrors html_errors={this.state.data.html_errors} />
 
-                             <table className="table table-striped">
-                                <thead className="thead-inverse">
-                                    <tr>
-                                        <th>
-                                            Errors
-                                        </th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-
-                                    {html_errors}
-
-                                </tbody>
-                            </table>
-
-
-                             <h4>Page meta tags</h4>
-
-                             <table className="table table-striped">
-                                <thead className="thead-inverse">
-                                    <tr>
-                                        <th>
-                                            Meta tag
-                                        </th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-
-                                    {meta_tags}
-
-                                </tbody>
-                            </table>
+                             <PageMeta page_meta={this.state.data.page_meta} />
 
 
                         </div>
