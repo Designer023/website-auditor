@@ -75,8 +75,8 @@ python webapp.py
 
 ## Basic Roadmap
 
-- Depth and crawling fixes
-- Session crawling fixes (currently ignores session due to DB issues! - Peewee!)
+- ~~Depth and crawling fixes~~
+- ~~Session crawling fixes (currently ignores session due to DB issues! - Peewee!)~~
 - Threading of performance (YSlow)
 - Frontend detail pages
 - Frontend start crawl page
