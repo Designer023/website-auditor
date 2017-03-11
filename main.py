@@ -3,44 +3,53 @@ import json
 import uuid
 
 from tools.analyser import Analyser
+from tools.reporter import Reporter
 
 with open('tidy-options.json') as data_file:
     validator_options = json.load(data_file)
 
-parser = argparse.ArgumentParser(description='Scan a url for code validation')
-parser.add_argument('-u', '--url', default='http://localhost:8000', type=str)
-parser.add_argument('-d', '--depth', default=2, type=int)
-parser.add_argument('-s', '--session', default=None, type=str)
-parser.add_argument('-a', '--analyse', default=False, type=bool)
+parser = argparse.ArgumentParser(description='Audit web pages for code validation and performance reports')
+
+parser.add_argument('-u', '--url', type=str,  help='URL to start the crawl with. 0 will crawl only the input URL')
+parser.add_argument('-d', '--depth', default=0, type=int,  help='Depth of the search when following internal links')
+parser.add_argument('-s', '--session', default=None, type=str,  help='Resume a previous session by adding the session key')
+parser.add_argument('--performance', dest='performance', action='store_true',  help='Run performance tools (YSlow). Because the test is slow and resource intensive, this is best done after all other metrics are passing for an audit')
+parser.set_defaults(performance=False)
+parser.add_argument('--no-report', dest='report', action='store_false', help='Prevent the generate of CSVs in the report directory. Ideal if you are using the web app')
+parser.set_defaults(report=True)
+parser.add_argument('--no-crawl', dest='crawl', action='store_false', help='Prevent a crawl. Ideal for generating reports based on existing crawls')
+parser.set_defaults(crawl=True)
+
 args = parser.parse_args()
+
+# If crawling a URL MUST be specified
+if args.crawl is True and not args.url:
+    parser.error('No url specified. I need this to do my job! use -u or --url and add the url to the page to test e.g. -u http://localhost:8000')
 
 print ("Scanning url %s and links %i deep...") % (args.url, args.depth)
 
 # Resume session checking
 if args.session is None:
-    # Generate a uniquie timestamp based on device /
+    # Generate a uniquie timestamp based on device and time /
     session_uuid = uuid.uuid1()
 else :
     session_uuid = args.session
 
 print ("Session UUID: %s") % session_uuid
 
-
-starting_url = args.url
-max_depth = args.depth
-
-# THE URL CAN CHANGE FROM THIS POINT.
-url = starting_url
-
 # Start the scanning and analysing
-analyser = Analyser(url, starting_url, session_uuid, max_depth, validator_options)
-
-# Optional YSlow
-if args.analyse is True:
-    analyser.analyse_performance = True
+analyser = Analyser(args.url, args.url, session_uuid, args.depth, validator_options, args.performance)
 
 # Start the analysis
-analyser.start()
+if args.crawl is True:
+    analyser.start()
+
+# Reporting
+if args.report is True:
+    if args.report == 'csv':
+        reporter = Reporter()
+        reporter.report('csv')
 
 #Let the user know!
 print ("Scanning done!")
+

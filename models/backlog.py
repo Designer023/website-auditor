@@ -23,9 +23,7 @@ class Backlog(peewee.Model):
         )
 try:
     Backlog.create_table()
-    print 'Page created'
 except:
-    print 'Page already created'
     pass
 
 

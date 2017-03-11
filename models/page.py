@@ -29,9 +29,7 @@ class Page(peewee.Model):
         )
 try:
     Page.create_table()
-    print 'Page created'
 except:
-    print 'Page already created'
     pass
 
 
@@ -42,6 +40,12 @@ class PageItem(object):
         print "PageItem initiated"
 
     def add(self, page_data):
+
+        try:
+            yslow_results = page_data['yslow_results']
+        except:
+            yslow_results = None
+
         url = page_data['url']
         title = page_data['title']
         header = page_data['header']
@@ -49,7 +53,6 @@ class PageItem(object):
         page_meta = page_data['page_meta']
         page_links = page_data['page_links']
         starting_url = page_data['starting_url']
-        yslow_results = getattr(page_data, 'yslow_results', None)
         session_uuid=page_data['session_uuid']
 
 
@@ -69,6 +72,12 @@ class PageItem(object):
             # Update existing
             page = Page.get(Page.url==page_data['url'], Page.session_uuid==page_data['session_uuid'])
 
+            try:
+                yslow_results = page_data['yslow_results']
+            except:
+                yslow_results = None
+
+
             # update value with new value
             page.url = page_data['url']
             page.title = page_data['title']
@@ -77,7 +86,7 @@ class PageItem(object):
             page.page_meta = page_data['page_meta']
             page.page_links = page_data['page_links']
             page.starting_url = page_data['starting_url']
-            page.yslow_results = getattr(page_data, 'yslow_results', None)
+            page.yslow_results = yslow_results
             page.session_uuid = page_data['session_uuid']
 
             page.save()

@@ -21,9 +21,7 @@ class Visited(peewee.Model):
         )
 try:
     Visited.create_table()
-    print 'Page created'
 except:
-    print 'Page already created'
     pass
 
 

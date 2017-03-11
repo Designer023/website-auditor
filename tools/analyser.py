@@ -21,15 +21,16 @@ class Analyser(object):
     analyse_performance = False
     visited_manager = VisitedItem()
 
-    def __init__(self, url, starting_url, session_uuid, max_depth, validator_options):
+    def __init__(self, url, starting_url, session_uuid, max_depth, validator_options, analyse_performance):
         self.url = url
         self.starting_url = starting_url
         self.session_uuid = session_uuid
         self.max_depth = max_depth
         self.validator_options = validator_options
+        self.analyse_performance = analyse_performance
 
 
-    def generate_yslow(self):
+    def update_yslow(self):
         yslow_results = generate_yslow(self.url)
 
         html_page = PageItem()

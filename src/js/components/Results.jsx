@@ -12,7 +12,7 @@ import $ from 'jquery';
 // import io from 'socket.io-client'
 // let socket = io()// http://127.0.0.1:5000/
 //
-// import LoadingIndicator from './LoadingIndicator';
+import LoadingIndicator from './LoadingIndicator';
 
 class Results extends Component {
 
@@ -23,6 +23,7 @@ class Results extends Component {
             tweets:[],
             loading: false
         };
+
 
         this.getTweets = this.getTweets.bind(this);
 
