@@ -4,7 +4,9 @@
 
 This tool is currently a WIP. The aim is to create a front end webapp that a developer can use to analyse the web pages they are creating for issues and performance enhancements. 
 
-Currently the app runs from the command line as `python main.py` (see installation notes) and will crawl the url provided to the depth provided and generate a set of reports in the reports directory.
+Currently the app runs from the command line as `python main.py` (see installation notes) and will crawl the url provided to the depth provided and generate a set of reports (csv) in the reports directory.
+
+The front end web app side of this project is further behind but once the backend is working properly that will be the focus!
 
 THERE ARE BUGS with with the depth crawling currently, the backlog/queue and visted log... however these are on my radar to fix ASAP. 
 
@@ -65,3 +67,16 @@ python main.py
 ## View Results
 
 python webapp.py
+
+
+## Basic Roadmap
+
+- Depth and crawling fixes
+- Session crawling fixes (currently ignores session due to DB issues! - Peewee!)
+- Threading of performance (YSlow)
+- Frontend detail pages
+- Frontend start crawl page
+- Frontend remove crawl
+- Frontend live updates to/from backend via SocketIO
+- ???
+- $$$
