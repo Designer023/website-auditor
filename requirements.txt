@@ -5,3 +5,4 @@ mysql-python
 flask
 eventlet
 flask-socketio
+pytidylib
