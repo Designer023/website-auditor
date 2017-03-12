@@ -20,7 +20,7 @@ if (typeof window !== 'undefined') {
 
 ReactDOM.render((
      <Router history={browserHistory}>
-        <Route path="/" component={Dashboard}/>
+        <Route path="/" component={Sessions}/>
          <Route path="/session/" component={Sessions}/>
          <Route path="/session/:session_id" component={SessionsDetail}/>
          <Route path="/page/:page_id" component={Page} >

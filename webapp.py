@@ -56,11 +56,11 @@ def get_session_with_uuid(session_uuid):
 
 
 # Session list - list of all sessions
-@app.route('/api/v1.0/auditor/results', methods=['GET'])
-def get_all_results():
+@app.route('/api/v1.0/auditor/results/<path:session_uuid>', methods=['GET'])
+def get_all_results(session_uuid):
 
     pages = PageItem()
-    pages_list = pages.getPages()
+    pages_list = pages.getPages(session_uuid)
 
     return jsonify(pages_list)
 

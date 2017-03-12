@@ -101,10 +101,16 @@ class PageItem(object):
     def count(self):
         return PageItem.select().count()
 
-    def getPages(self):
+    def getPages(self, session_uuid=None):
+
+        if session_uuid is not None:
+            session_objects = Page.filter(Page.session_uuid == session_uuid)
+        else:
+            session_objects = Page.select()
+
         pages_list = list()
 
-        for item in Page.select():
+        for item in session_objects:
 
             try:
                 page_meta = ast.literal_eval(item.page_meta)
