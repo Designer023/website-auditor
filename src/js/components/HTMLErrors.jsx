@@ -17,7 +17,7 @@ class HTMLErrors extends Component {
         return (
             <div className="card mt-5">
                 <div className="card-block">
-                    <h4>HTML errors</h4>
+                    <h4>HTML errors - <a href={ this.props.src } target="_blank">source</a></h4>
 
                      <table className="table table-striped">
                         <thead className="thead-inverse">

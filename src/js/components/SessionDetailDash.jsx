@@ -185,7 +185,7 @@ class SessionDetailDash extends Component {
 
 
 
-                             <HTMLErrors html_errors={this.state.data.html_errors} />
+                             <HTMLErrors html_errors={this.state.data.html_errors} src={this.state.data.url} />
 
                              <PageMeta page_meta={this.state.data.page_meta} />
 
