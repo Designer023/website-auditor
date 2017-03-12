@@ -36,7 +36,6 @@ except:
 
 class PageItem(object):
 
-
     def add(self, page_data):
 
         try:
@@ -53,6 +52,12 @@ class PageItem(object):
         starting_url = page_data['starting_url']
         session_uuid=page_data['session_uuid']
 
+        try:
+            title.decode('utf-8')
+            print "string is UTF-8, length %d bytes" % len(title)
+        except UnicodeError:
+            print "string is not UTF-8"
+            title = 'NON UTF-8 Chars. Title not saved!'
 
         item = Page(url=url,
                     title=title,
@@ -131,6 +136,42 @@ class PageItem(object):
 
         return {'pages': pages_list}
 
+
+    def getPagesForSession(self, session_uuid):
+        pages_list = list()
+
+        for item in Page.filter(session_uuid=session_uuid):
+
+            try:
+                page_meta = ast.literal_eval(item.page_meta)
+            except:
+                page_meta = []
+
+            try:
+                yslow_results = ast.literal_eval(item.yslow_results)
+            except:
+                yslow_results = ''
+
+            try:
+                html_errors = ast.literal_eval(item.html_errors)
+            except:
+                html_errors = []
+
+            pages_list.append({
+                'id': item.id,
+                'url':item.url,
+                'title': item.title,
+                'header': item.header,
+                'html_errors': html_errors,
+                'page_meta': page_meta,
+                'page_links': ast.literal_eval(item.page_links),
+                'starting_url': item.starting_url,
+                'yslow_results': yslow_results,
+                'session_uuid': item.session_uuid
+            })
+
+        return {'pages': pages_list}
+
     def update_yslow(self, url, yslow_results):
         try:
             page = Page.get(Page.url == url)
@@ -178,4 +219,7 @@ class PageItem(object):
 
         except:
             return "No Page found"
+
+
+
 

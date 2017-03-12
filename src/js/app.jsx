@@ -15,7 +15,13 @@ if (typeof window !== 'undefined') {
 ReactDOM.render((
      <Router history={hashHistory}>
         <Route path="/" component={Dashboard}/>
-        <Route path="/session/:session_id" component={SessionDetailDash}/>
+         <Route path="/session/" component={Dashboard}/>
+         <Route path="/session/:session_id" component={SessionDetailDash}/>
+         <Route path="/page/:page_id" component={SessionDetailDash}/>
+         <Route path="/page/:page_id/errors" component={SessionDetailDash}/>
+         <Route path="/page/:page_id/header" component={SessionDetailDash}/>
+         <Route path="/page/:page_id/meta" component={SessionDetailDash}/>
+         <Route path="/page/:page_id/yslow" component={SessionDetailDash}/>
       </Router>
     ),
     document.getElementById('app')

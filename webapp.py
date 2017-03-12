@@ -32,7 +32,8 @@ socketio = SocketIO(app)
 
 # API
 
-@app.route('/api/v1.0/auditor/results', methods=['GET'])
+# Session list - list of all sessions
+@app.route('/api/v1.0/auditor/sessions', methods=['GET'])
 def get_sessions():
 
     pages = PageItem()
@@ -40,6 +41,57 @@ def get_sessions():
 
     return jsonify(pages_list)
 
+
+# Session list - list of all sessions
+@app.route('/api/v1.0/auditor/results', methods=['GET'])
+def get_all_results():
+
+    pages = PageItem()
+    pages_list = pages.getPages()
+
+    return jsonify(pages_list)
+
+# # Session details - url, overall stats (list of results provided by get_session_results)
+# @app.route('/api/v1.0/auditor/sessions/<path:session_uuid>', methods=['GET'])
+# def get_session_details(session_uuid):
+#
+#     pages = PageItem()
+#     pages_list = pages.getPages()
+#
+#     return jsonify(pages_list)
+
+# # Result list - depreciated by Session details
+# @app.route('/api/v1.0/auditor/results', methods=['GET'])
+# def get_sessions():
+#
+#     pages = PageItem()
+#     pages_list = pages.getPages()
+#
+#     return jsonify(pages_list)
+
+
+# # Results list for session ERRORS
+# @app.route('/api/v1.0/auditor/page/<path:session_uuid>/errors', methods=['GET'])
+# def get_page_in_session_errors(session_uuid):
+#
+#     pages = PageItem()
+#     pages_list = pages.getPagesForSession(session_uuid)
+#
+#     return jsonify(pages_list)
+#
+# # Results list for session
+# @app.route('/api/v1.0/auditor/page/<path:session_uuid>', methods=['GET'])
+# def get_page_overview(session_uuid):
+#
+#     pages = PageItem()
+#     pages_list = pages.getPagesForSession(session_uuid)
+#
+#     return jsonify(pages_list)
+
+
+
+
+#
 @app.route('/api/v1.0/auditor/detail/<path:page_id>', methods=['GET'])
 def get_detail_for_page(page_id):
 
@@ -52,29 +104,31 @@ def get_detail_for_page(page_id):
 
     return jsonify(data)
 
-@app.route('/api/v1.0/auditor/yslow/<path:page_id>', methods=['GET'])
-def update_yslow_for_page(page_id):
-
-    pages = PageItem()
-    page_data = pages.get_page_data(page_id)
-
-    analyser = Analyser(page_data['url'],
-                        page_data['starting_url'],
-                        0,
-                        0,
-                        validator_options)
-
-    analyser.generate_yslow()
 
 
-    # Get the generated updated data
+# @app.route('/api/v1.0/auditor/yslow/<path:page_id>', methods=['GET'])
+# def update_yslow_for_page(page_id):
+#
+#     pages = PageItem()
+#     page_data = pages.get_page_data(page_id)
+#
+#     analyser = Analyser(page_data['url'],
+#                         page_data['starting_url'],
+#                         0,
+#                         0,
+#                         validator_options)
+#
+#     analyser.generate_yslow()
 
-    page_data = pages.get_page_data(page_id)
 
-    data = {}
-    data['data'] = page_data
-
-    return jsonify(data)
+    # # Get the generated updated data
+    #
+    # page_data = pages.get_page_data(page_id)
+    #
+    # data = {}
+    # data['data'] = page_data
+    #
+    # return jsonify(data)
 
 
 # @app.route('/ping')
