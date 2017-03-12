@@ -2,6 +2,7 @@ import argparse
 import json
 import uuid
 
+from models.sessions import SessionItem
 from tools.analyser import Analyser
 from tools.reporter import Reporter
 
@@ -37,6 +38,9 @@ if __name__ == "__main__":
     else :
         session_uuid = args.session
         resume_session = True
+
+    session = SessionItem()
+    session.create(args.url,session_uuid)
 
     print ("Session UUID: %s") % session_uuid
 

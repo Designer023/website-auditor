@@ -54,14 +54,3 @@ class VisitedItem(object):
         except:
             # Create new status entry
             self.add(url, session_uuid)
-
-    # def count(self):
-    #     return Visited.select().count(Visited.session_uuid==session_uuid)
-    #
-    # def first(self):
-    #     data = Visited.select().get(Visited.session_uuid==session_uuid)
-    #     return data
-    #
-    # def popFirst(self):
-    #     first = Visited.select().get(Visited.session_uuid==session_uuid)
-    #     first.delete_instance()

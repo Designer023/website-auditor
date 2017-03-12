@@ -1,6 +1,7 @@
 #!flask/bin/python
 import json
 
+from models.sessions import SessionItem
 from settings.settings import *
 from flask import Flask, jsonify, render_template, send_from_directory, request, Response
 from flask_socketio import SocketIO
@@ -36,10 +37,22 @@ socketio = SocketIO(app)
 @app.route('/api/v1.0/auditor/sessions', methods=['GET'])
 def get_sessions():
 
-    pages = PageItem()
-    pages_list = pages.getPages()
+    sessions = SessionItem()
+    session_list = {}
+    session_list['sessions'] = sessions.get_sessions()
 
-    return jsonify(pages_list)
+    return jsonify(session_list)
+
+# Session list - list of all sessions
+@app.route('/api/v1.0/auditor/sessions/<path:session_uuid>', methods=['GET'])
+def get_session_with_uuid(session_uuid):
+
+    sessions = SessionItem()
+    session_list = {}
+    session_list['sessions'] = sessions.get_sessions(session_uuid)
+
+    return jsonify(session_list)
+
 
 
 # Session list - list of all sessions

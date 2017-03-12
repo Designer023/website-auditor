@@ -136,6 +136,8 @@ class PageItem(object):
 
         return {'pages': pages_list}
 
+    def count_session(self, session_uuid):
+        return Page.filter(Page.session_uuid==session_uuid).count()
 
     def getPagesForSession(self, session_uuid):
         pages_list = list()

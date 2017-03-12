@@ -60,7 +60,7 @@ class BacklogItem(object):
         first.delete_instance()
 
     def count_session(self, session_uuid):
-        return Backlog.select().count(Backlog.session_uuid==session_uuid)
+        return Backlog.filter(Backlog.session_uuid==session_uuid).count()
 
     def first_session(self, session_uuid):
         data = Backlog.filter(Backlog.session_uuid==session_uuid).get()

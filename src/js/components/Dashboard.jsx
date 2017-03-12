@@ -6,6 +6,7 @@ import Results from './Results';
 class Dashboard extends Component {
 
     render() {
+        console.log(this.props.params.session_id);
 
         return (
             <div className="container-fluid">

@@ -2,6 +2,7 @@ import time
 
 from models.page import PageItem
 from models.backlog import BacklogItem
+from models.sessions import SessionItem
 from models.visited_log import VisitedItem
 
 from .html_importer import HTMLImporter
@@ -39,6 +40,13 @@ class Analyser(object):
 
     def analyse_pages(self, url, depth):
 
+        backlog_item = BacklogItem()
+        backlog_count = backlog_item.count_session(self.session_uuid)
+
+        # Update session with new link
+        session = SessionItem()
+        session.update_queue(self.starting_url, self.session_uuid, backlog_count)
+
         parsed_html = HTMLImporter(url)
         parsed_html.import_html()
 
@@ -73,6 +81,10 @@ class Analyser(object):
             # Save data to DB
             html_page = PageItem()
             html_page.upsert(page_data)
+
+            complete_count = html_page.count_session(self.session_uuid)
+            session.update_pages(self.starting_url, self.session_uuid,
+                                 complete_count)
 
             # Loop on the next set of links 1 deeper
             depth += 1
@@ -125,5 +137,9 @@ class Analyser(object):
             backlog_item.pop_first_session(self.session_uuid)
             self.visited_manager.upsert(next_page.url, self.session_uuid)
             print ("Removed: %s from the backlog and added it to the visted list") % next_page.url
+
+            session = SessionItem()
+            progress = session.session_progress(self.starting_url, self.session_uuid)
+            print ("%i%% complete. %i/%i pages crawled") % (progress['percent'], progress['page_count'], progress['queue_count'])
 
         print "Analysis complete"
