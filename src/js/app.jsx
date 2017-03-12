@@ -25,7 +25,7 @@ ReactDOM.render((
          <Route path="/session/:session_id" component={SessionsDetail}/>
          <Route path="/page/:page_id" component={Page} >
              <Route path="/page/:page_id/errors" component={PageErrors}/>
-             <Route path="/page/:page_id/header" component={PageHeaders}/>
+             <Route path="/page/:page_id/headers" component={PageHeaders}/>
              <Route path="/page/:page_id/meta" component={PageMetaTags}/>
              <Route path="/page/:page_id/performance" component={PagePerformance}/>
          </Route>
