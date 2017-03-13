@@ -38,7 +38,7 @@ class Analyser(object):
         html_page.update_yslow(self.url, yslow_results)
 
 
-    def analyse_pages(self, url, depth):
+    def analyse_pages(self, url, depth, performance):
 
         backlog_item = BacklogItem()
         backlog_count = backlog_item.count_session(self.session_uuid)
@@ -73,7 +73,7 @@ class Analyser(object):
             page_data['page_links'] = link_parser.parse_links(
                 parsed_html.html_data)
 
-            if self.analyse_performance is True:
+            if performance is True:
                 print "Analysing page with YSlow. This will take a few seconds..."
                 page_data['yslow_results'] = generate_yslow(url)
                 print "Page analysis complete"
@@ -106,7 +106,8 @@ class Analyser(object):
                             url_to_test,
                             self.starting_url,
                             self.session_uuid,
-                            depth
+                            depth,
+                            self.analyse_performance
                         )
 
     def start(self, resume_session):
@@ -117,7 +118,7 @@ class Analyser(object):
         if not resume_session:
             # Add the initial item to the backlog so there is something to process
             # We use upsert, but in theory a normal add should be fine!
-            backlog_item.upsert(self.url, self.starting_url, self.session_uuid, 0)
+            backlog_item.upsert(self.url, self.starting_url, self.session_uuid, 0, self.analyse_performance)
 
         # Process backlog while there are items for this session
         while backlog_item.count_session(self.session_uuid) > 0:
@@ -132,7 +133,7 @@ class Analyser(object):
             time.sleep(3)
 
             print ("Scanning: %s") % next_page.url
-            self.analyse_pages(next_page.url, next_page.depth)
+            self.analyse_pages(next_page.url, next_page.depth, next_page.performance)
 
             backlog_item.pop_first_session(self.session_uuid)
             self.visited_manager.upsert(next_page.url, self.session_uuid)

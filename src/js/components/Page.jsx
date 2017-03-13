@@ -64,45 +64,77 @@ class Page extends Component {
 
     render() {
 
-        return (
-            <div>
+        if (this.state.loading === true) {
 
-                <div className="card mt-5">
-                    <div className="card-block">
-                         <h2>Page overview for {this.props.params.page_id}</h2>
+            return (
+                <div>Loading...</div>
+            )
+        } else {
+            return (
+                <div className="container">
 
-                        <nav className="navbar navbar-toggleable-md navbar-light bg-faded">
-                          <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                            <span className="navbar-toggler-icon"></span>
-                          </button>
-                          <div className="collapse navbar-collapse" id="navbarNav">
+                     <div className="jumbotron">
+                          <h1 className="display-3">Page overview for {this.props.params.page_id}</h1>
+                          <hr className="my-4" />
+
+                            <h3 className="lead">URL for crawl</h3>
+                            <h4>Session uuid: {this.props.params.session_id}</h4>
+
+                    </div>
+
+
+                    <nav
+                        className="navbar navbar-toggleable-md navbar-light bg-faded">
+                        <button
+                            className="navbar-toggler navbar-toggler-right"
+                            type="button" data-toggle="collapse"
+                            data-target="#navbarNav"
+                            aria-controls="navbarNav"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                            <span
+                                className="navbar-toggler-icon"></span>
+                        </button>
+                        <div className="collapse navbar-collapse"
+                             id="navbarNav">
                             <ul className="navbar-nav">
-                              <li className="nav-item">
-                                  {/*<NavLink className="nav-link" to={"/page/" + this.props.params.page_id } >Overview</NavLink>*/}
-
-                                  <Link className="nav-link" to={"/session/" + this.props.params.session_id + "/page/" + this.props.params.page_id } >Overview</Link>
-                              </li>
-                              <li className="nav-item">
-                                  <Link className="nav-link" to={"/session/" + this.props.params.session_id + "/page/" + this.props.params.page_id + "/errors/" } >Errors</Link>
-                              </li>
-                              <li className="nav-item">
-                                  <Link className="nav-link" to={"/session/" + this.props.params.session_id + "/page/" + this.props.params.page_id + "/meta/" } >Meta tags</Link>
-                              </li>
-                              <li className="nav-item">
-                                  <Link className="nav-link" to={"/session/" + this.props.params.session_id + "/page/" + this.props.params.page_id + "/performance/" } >Performance</Link>
-                              </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to={"/session/" + this.props.params.session_id + "/page/" + this.props.params.page_id + "/headers/" } >Response headers</Link>
+                                    {/*<NavLink className="nav-link" to={"/page/" + this.props.params.page_id } >Overview</NavLink>*/}
+
+                                    <Link className="nav-link"
+                                          to={"/session/" + this.props.params.session_id + "/page/" + this.props.params.page_id + '/overview/'}>Overview</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link"
+                                          to={"/session/" + this.props.params.session_id + "/page/" + this.props.params.page_id + "/errors/" }>Errors</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link"
+                                          to={"/session/" + this.props.params.session_id + "/page/" + this.props.params.page_id + "/meta/" }>Meta
+                                        tags</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link"
+                                          to={"/session/" + this.props.params.session_id + "/page/" + this.props.params.page_id + "/performance/" }>Performance</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link"
+                                          to={"/session/" + this.props.params.session_id + "/page/" + this.props.params.page_id + "/headers/" }>Response
+                                        headers</Link>
                                 </li>
                             </ul>
-                          </div>
-                        </nav>
+                        </div>
+                    </nav>
+
+                    <div>
 
                         {this.props.children}
+
                     </div>
-                 </div>
-            </div>
-        )
+
+                </div>
+            )
+        }
     }
 }
 

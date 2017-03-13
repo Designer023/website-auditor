@@ -11,6 +11,7 @@ class Backlog(peewee.Model):
     session_uuid = peewee.CharField()
     starting_url = peewee.CharField()
     depth = peewee.IntegerField()
+    performance = peewee.BooleanField()
 
     class Meta:
         database = MySQLDatabase(
@@ -31,22 +32,24 @@ except:
 class BacklogItem(object):
 
 
-    def add(self, url, starting_url, session_uuid, depth):
+    def add(self, url, starting_url, session_uuid, depth, performance):
 
         item = Backlog(url=url,
                     session_uuid=session_uuid,
                     starting_url=starting_url,
-                    depth=depth)
+                    depth=depth,
+                    performance=performance
+                   )
         item.save()
 
-    def upsert(self, url, starting_url, session_uuid, depth):
+    def upsert(self, url, starting_url, session_uuid, depth, performance):
         try:
             # Update existing
             _ = Backlog.get(Backlog.url==url, Backlog.session_uuid==session_uuid)
             #if it exists then skip it
         except:
             # Create new status entry
-            self.add(url, starting_url, session_uuid, depth)
+            self.add(url, starting_url, session_uuid, depth, performance)
 
     def count(self):
         return Backlog.select().count()

@@ -62,12 +62,19 @@ class SessionsDetail extends Component {
 
                 let page_results = this.state.pages.map(function(page) {
 
+                let yslow_result = '-';
+                if (page.yslow_results.score != undefined ) {
+                    yslow_result = (
+                        <Link to={"/session/" + this.props.params.session_id + "/page/" + page.id + "/performance/" } >{page.yslow_results.score}</Link>
+                    )
+                }
+
                 return (
 
                     <tr key={page.id}>
 
                         <td>
-                            <Link to={"/session/" + this.props.params.session_id + "/page/" + page.id } >{page.url}</Link>
+                            <Link to={"/session/" + this.props.params.session_id + "/page/" + page.id + "/overview/" } >{page.url}</Link>
                         </td>
 
                         <td>
@@ -75,11 +82,11 @@ class SessionsDetail extends Component {
                         </td>
 
                         <td>
-                            <Link to={"/page/" + this.props.params.session_id + "/errors/" } >{page.html_errors.length}</Link>
+                            <Link to={"/session/" + this.props.params.session_id + "/page/" + page.id + "/errors/" } >{page.html_errors.length}</Link>
                         </td>
 
                         <td>
-                            -
+                            {yslow_result}
                         </td>
 
                     </tr>
@@ -89,7 +96,7 @@ class SessionsDetail extends Component {
             }.bind(this));
 
             return (
-                <div>
+                <div className="container">
                     <div className="jumbotron">
                           <h1 className="display-3">Crawl details</h1>
                           <hr className="my-4" />
