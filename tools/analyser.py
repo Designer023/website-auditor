@@ -140,6 +140,7 @@ class Analyser(object):
 
             session = SessionItem()
             progress = session.session_progress(self.starting_url, self.session_uuid)
-            print ("%i%% complete. %i/%i pages crawled") % (progress['percent'], progress['page_count'], progress['queue_count'])
+            total_pages = progress['queue_count'] + progress['page_count']
+            print ("%i%% complete. %i/%i pages crawled") % (progress['percent'], progress['page_count'], total_pages)
 
         print "Analysis complete"

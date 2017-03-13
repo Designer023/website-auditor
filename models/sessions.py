@@ -71,7 +71,7 @@ class SessionItem(object):
         pages = session.pages
         queued = session.queued
         progress = {}
-        progress['percent'] = 100 / (pages + queued) * pages
+        progress['percent'] = 100 / float(pages + queued) * float(pages)
         progress['page_count'] = pages
         progress['queue_count'] = queued
 
@@ -93,9 +93,11 @@ class SessionItem(object):
             session['url'] = item.starting_url
             session['pages'] = item.pages
             session['queue'] = item.queued
+
+            total_items = item.pages + item.queued
             try:
-                percent = 100 / (item.pages + item.queued) * item.pages
-                session['percent'] = percent
+                percent = 100 / float(total_items) * float(item.pages)
+                session['percent'] = round(percent, 2)
             except ZeroDivisionError:
                 session['percent'] = 0
 

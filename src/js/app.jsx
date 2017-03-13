@@ -23,11 +23,11 @@ ReactDOM.render((
         <Route path="/" component={Sessions}/>
          <Route path="/session/" component={Sessions}/>
          <Route path="/session/:session_id" component={SessionsDetail}/>
-         <Route path="/page/:page_id" component={Page} >
-             <Route path="/page/:page_id/errors" component={PageErrors}/>
-             <Route path="/page/:page_id/headers" component={PageHeaders}/>
-             <Route path="/page/:page_id/meta" component={PageMetaTags}/>
-             <Route path="/page/:page_id/performance" component={PagePerformance}/>
+         <Route path="/session/:session_id/page/:page_id" component={Page} >
+             <Route path="/session/:session_id/page/:page_id/errors" component={PageErrors}/>
+             <Route path="/session/:session_id/page/:page_id/headers" component={PageHeaders}/>
+             <Route path="/session/:session_id/page/:page_id/meta" component={PageMetaTags}/>
+             <Route path="/session/:session_id/page/:page_id/performance" component={PagePerformance}/>
          </Route>
       </Router>
     ),

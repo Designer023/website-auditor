@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import { Link } from 'react-router'
 
+import NavLink from './NavLink';
+
 import LoadingIndicator from './LoadingIndicator';
 
 import ResponseHeader from './ResponseHeader';
@@ -64,16 +66,37 @@ class Page extends Component {
 
         return (
             <div>
+
                 <div className="card mt-5">
                     <div className="card-block">
                          <h2>Page overview for {this.props.params.page_id}</h2>
 
-                        <Link to={"/page/" + this.props.params.page_id } >Overview</Link>
-                        <Link to={"/page/" + this.props.params.page_id + "/errors/" } >Errors</Link>
-                        <Link to={"/page/" + this.props.params.page_id + "/meta/" } >Meta tags</Link>
-                        <Link to={"/page/" + this.props.params.page_id + "/performance/" } >Performance</Link>
-                        <Link to={"/page/" + this.props.params.page_id + "/headers/" } >Response headers</Link>
+                        <nav className="navbar navbar-toggleable-md navbar-light bg-faded">
+                          <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span className="navbar-toggler-icon"></span>
+                          </button>
+                          <div className="collapse navbar-collapse" id="navbarNav">
+                            <ul className="navbar-nav">
+                              <li className="nav-item">
+                                  {/*<NavLink className="nav-link" to={"/page/" + this.props.params.page_id } >Overview</NavLink>*/}
 
+                                  <Link className="nav-link" to={"/session/" + this.props.params.session_id + "/page/" + this.props.params.page_id } >Overview</Link>
+                              </li>
+                              <li className="nav-item">
+                                  <Link className="nav-link" to={"/session/" + this.props.params.session_id + "/page/" + this.props.params.page_id + "/errors/" } >Errors</Link>
+                              </li>
+                              <li className="nav-item">
+                                  <Link className="nav-link" to={"/session/" + this.props.params.session_id + "/page/" + this.props.params.page_id + "/meta/" } >Meta tags</Link>
+                              </li>
+                              <li className="nav-item">
+                                  <Link className="nav-link" to={"/session/" + this.props.params.session_id + "/page/" + this.props.params.page_id + "/performance/" } >Performance</Link>
+                              </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to={"/session/" + this.props.params.session_id + "/page/" + this.props.params.page_id + "/headers/" } >Response headers</Link>
+                                </li>
+                            </ul>
+                          </div>
+                        </nav>
 
                         {this.props.children}
                     </div>
@@ -82,7 +105,6 @@ class Page extends Component {
         )
     }
 }
-
 
 
 export default Page;

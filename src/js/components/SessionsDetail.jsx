@@ -67,7 +67,7 @@ class SessionsDetail extends Component {
                     <tr key={page.id}>
 
                         <td>
-                            <Link to={"/page/" + page.id } >{page.url}</Link>
+                            <Link to={"/session/" + this.props.params.session_id + "/page/" + page.id } >{page.url}</Link>
                         </td>
 
                         <td>
@@ -75,7 +75,7 @@ class SessionsDetail extends Component {
                         </td>
 
                         <td>
-                            <Link to={"/page/" + page.id + "/errors/" } >{page.html_errors.length}</Link>
+                            <Link to={"/page/" + this.props.params.session_id + "/errors/" } >{page.html_errors.length}</Link>
                         </td>
 
                         <td>
@@ -86,7 +86,7 @@ class SessionsDetail extends Component {
 
                 )
 
-            });
+            }.bind(this));
 
             return (
                 <div>
