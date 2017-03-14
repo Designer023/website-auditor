@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 
+
 class MetaParser(object):
 
     def parse_meta(self, html):

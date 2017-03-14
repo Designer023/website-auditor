@@ -9,16 +9,19 @@ YSLOW = os.path.join(APP_ROOT, 'yslow.js')
 PHANTOMJS = "/usr/local/Cellar/phantomjs/2.1.1/bin/phantomjs"
 
 
-
-
 def yslow(url):
     try:
-        f = subprocess.Popen([PHANTOMJS, YSLOW, "--info grade", url], stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT, shell=False)
+        f = subprocess.Popen(
+            [PHANTOMJS, YSLOW, "--info grade", url],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            shell=False
+        )
         out = f.communicate()[0]
         return json.loads(out)
     except Exception, e:
         logging.fatal("Error parsing message: %s" % e)
+
 
 def generate_yslow(url):
     d = yslow(url)

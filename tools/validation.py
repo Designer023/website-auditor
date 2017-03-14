@@ -1,5 +1,6 @@
 from tidylib import tidy_document
 
+
 class Validator(object):
     options = {}
 

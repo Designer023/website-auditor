@@ -22,7 +22,8 @@ class Analyser(object):
     analyse_performance = False
     visited_manager = VisitedItem()
 
-    def __init__(self, url, starting_url, session_uuid, max_depth, validator_options, analyse_performance):
+    def __init__(self, url, starting_url, session_uuid,
+                 max_depth, validator_options, analyse_performance):
         self.url = url
         self.starting_url = starting_url
         self.session_uuid = session_uuid
@@ -30,13 +31,15 @@ class Analyser(object):
         self.validator_options = validator_options
         self.analyse_performance = analyse_performance
 
-
-    def update_yslow(self):
-        yslow_results = generate_yslow(self.url)
-
-        html_page = PageItem()
-        html_page.update_yslow(self.url, yslow_results)
-
+    # def update_yslow(self):
+    #     """
+    #
+    #     :return:
+    #     """
+    #     yslow_results = generate_yslow(self.url)
+    #
+    #     html_page = PageItem()
+    #     html_page.update_yslow(self.url, yslow_results)
 
     def analyse_pages(self, url, depth, performance):
 
@@ -45,7 +48,8 @@ class Analyser(object):
 
         # Update session with new link
         session = SessionItem()
-        session.update_queue(self.starting_url, self.session_uuid, backlog_count)
+        session.update_queue(self.starting_url,
+                             self.session_uuid, backlog_count)
 
         parsed_html = HTMLImporter(url)
         parsed_html.import_html()
@@ -71,10 +75,13 @@ class Analyser(object):
 
             link_parser = LinkParser()
             page_data['page_links'] = link_parser.parse_links(
-                parsed_html.html_data)
+                parsed_html.html_data,
+                url
+            )
 
             if performance is True:
-                print "Analysing page with YSlow. This will take a few seconds..."
+                print "Analysing page with YSlow. " \
+                      "This will take a few seconds..."
                 page_data['yslow_results'] = generate_yslow(url)
                 print "Page analysis complete"
 
@@ -89,15 +96,17 @@ class Analyser(object):
             # Loop on the next set of links 1 deeper
             depth += 1
 
-            # If this new depth doesn't exceed the max then loop through the urls for this page!
+            # If this new depth doesn't exceed the max the process new links
             if depth <= self.max_depth:
                 for link in page_data['page_links']['internal']:
                     # clean base url and append it to the links
-                    url_to_test = "%s%s" % (self.starting_url.rstrip('/'), link)
+                    url_to_test = "%s%s" % (self.starting_url
+                                            .rstrip('/'), link)
 
-                    # Check if the item has already been scanned this session in
+                    # Check if the item has already been scanned this session
                     # in the visted_log
-                    visited_this_session = self.visited_manager.visited_this_session(url_to_test, self.session_uuid)
+                    visited_this_session = self.visited_manager\
+                        .visited_this_session(url_to_test, self.session_uuid)
 
                     # If its not in the visited list then add it to the queue!
                     if visited_this_session is False:
@@ -114,11 +123,12 @@ class Analyser(object):
 
         backlog_item = BacklogItem()
 
-        # If we're not resuming we better add something to start with! or there will extra scanning that happens!
+        # If we're not resuming we better add something to start with!
         if not resume_session:
-            # Add the initial item to the backlog so there is something to process
+            # Add the initial item to the backlog for processing
             # We use upsert, but in theory a normal add should be fine!
-            backlog_item.upsert(self.url, self.starting_url, self.session_uuid, 0, self.analyse_performance)
+            backlog_item.upsert(self.url, self.starting_url,
+                                self.session_uuid, 0, self.analyse_performance)
 
         # Process backlog while there are items for this session
         while backlog_item.count_session(self.session_uuid) > 0:
@@ -133,15 +143,19 @@ class Analyser(object):
             time.sleep(3)
 
             print ("Scanning: %s") % next_page.url
-            self.analyse_pages(next_page.url, next_page.depth, next_page.performance)
+            self.analyse_pages(next_page.url,
+                               next_page.depth, next_page.performance)
 
             backlog_item.pop_first_session(self.session_uuid)
             self.visited_manager.upsert(next_page.url, self.session_uuid)
-            print ("Removed: %s from the backlog and added it to the visted list") % next_page.url
+            print ("Removed: %s from the backlog "
+                   "and added it to the visted list") % next_page.url
 
             session = SessionItem()
-            progress = session.session_progress(self.starting_url, self.session_uuid)
+            progress = session.session_progress(self.starting_url,
+                                                self.session_uuid)
             total_pages = progress['queue_count'] + progress['page_count']
-            print ("%i%% complete. %i/%i pages crawled") % (progress['percent'], progress['page_count'], total_pages)
+            print ("%i%% complete. %i/%i pages crawled") % (
+                progress['percent'], progress['page_count'], total_pages)
 
         print "Analysis complete"

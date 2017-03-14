@@ -1,4 +1,3 @@
-import ast
 import os
 
 import csv
@@ -15,7 +14,12 @@ class Reporter(object):
         if type == 'csv':
             print 'Generating CSVs...'
 
-            report_files = ['reports/summary.csv', 'reports/links.csv', 'reports/errors.csv', 'reports/yslow.csv']
+            report_files = [
+                'reports/summary.csv',
+                'reports/links.csv',
+                'reports/errors.csv',
+                'reports/yslow.csv'
+            ]
 
             for report_file in report_files:
                 # Create report directory and files
@@ -29,7 +33,7 @@ class Reporter(object):
             summaryFile = open('reports/summary.csv', 'wt')
 
             wr = csv.writer(summaryFile, quoting=csv.QUOTE_ALL)
-            wr.writerow( ('URL', 'Page title', 'Validation Errors') )
+            wr.writerow(('URL', 'Page title', 'Validation Errors'))
 
             linkFile = open('reports/links.csv', 'wt')
             errorFile = open('reports/errors.csv', 'wt')
@@ -78,11 +82,15 @@ class Reporter(object):
             links_query = set()
 
             for page in pages_list['pages']:
-                wr.writerow(( str(page['url']), str(page['title']), str(len(page['html_errors'])) ))
+                wr.writerow((
+                    str(page['url']),
+                    str(page['title']),
+                    str(len(page['html_errors']))
+                ))
 
                 # Errors
                 for error in page['html_errors']:
-                    wr_error.writerow(( str(page['url']), str(error)))
+                    wr_error.writerow((str(page['url']), str(error)))
 
                 # Add links to links list
                 for link in page['page_links']['internal']:
@@ -131,23 +139,17 @@ class Reporter(object):
                         yslow_breakdown['yxhrmethod'],
                     ))
 
-
-
-
-
-
-
             linkFile = open('reports/links.csv', 'wt')
 
             wr_link = csv.writer(linkFile, quoting=csv.QUOTE_ALL)
             wr_link.writerow(('Link', 'Type'))
             for link in links_internal:
-                wr_link.writerow(( str(link), 'Internal' ))
+                wr_link.writerow((str(link), 'Internal'))
 
             for link in links_query:
-                wr_link.writerow(( str(link), 'Query string' ))
+                wr_link.writerow((str(link), 'Query string'))
 
             for link in links_external:
-                wr_link.writerow(( str(link), 'External' ))
+                wr_link.writerow((str(link), 'External'))
 
         print 'Reports created'

@@ -2,7 +2,7 @@
 import json
 
 from models.sessions import SessionItem
-from settings.settings import *
+# from settings.settings import *
 from flask import Flask, jsonify, render_template, request, Response
 from flask_socketio import SocketIO
 from flask_socketio import send, emit

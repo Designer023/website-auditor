@@ -1,8 +1,9 @@
 from bs4 import BeautifulSoup
 
+
 class LinkParser(object):
 
-    def parse_links(self, html):
+    def parse_links(self, html, url):
         soup = BeautifulSoup(html, 'html5lib')
 
         links = []
@@ -18,7 +19,7 @@ class LinkParser(object):
 
         for link in soup.find_all('a', href=True):
             if link.has_attr('href'):
-                if not hash in link['href']:
+                if hash not in link['href']:
                     if link['href'] != '' and link['href'] != '/':
                         links.append(link['href'])
 
@@ -43,7 +44,7 @@ class LinkParser(object):
                     link.index(url)
                     internal_links.append(link)
                 except:
-                    # It's external but not local either! I might not be needed!
+                    # It's external but not local either!
                     pass
 
             except ValueError:

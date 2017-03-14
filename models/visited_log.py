@@ -1,5 +1,3 @@
-import ast
-
 import peewee
 from peewee import *
 
@@ -17,22 +15,19 @@ class Visited(peewee.Model):
             passwd=database_password
         )
         indexes = (
-            (('url', 'session_uuid' ), True),
+            (('url', 'session_uuid'), True),
         )
 try:
     Visited.create_table()
 except:
     pass
 
-
-
 class VisitedItem(object):
 
     def visited_this_session(self, url, session_uuid):
         has_visited = Visited.filter(
-            Visited.url==url,
-            Visited.session_uuid==session_uuid).count()
-
+            Visited.url == url,
+            Visited.session_uuid == session_uuid).count()
 
         if has_visited != 0:
             return True
@@ -49,8 +44,9 @@ class VisitedItem(object):
     def upsert(self, url, session_uuid):
         try:
             # Update existing
-            _ = Visited.get(Visited.url==url, Visited.session_uuid==session_uuid)
-            #if it exists then skip it
+            _ = Visited.get(Visited.url == url,
+                            Visited.session_uuid == session_uuid)
+            # If it exists then skip it
         except:
             # Create new status entry
             self.add(url, session_uuid)

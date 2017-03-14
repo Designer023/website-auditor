@@ -19,7 +19,7 @@ class Session(peewee.Model):
             passwd=database_password
         )
         indexes = (
-            (('starting_url', 'session_uuid' ), True),
+            (('starting_url', 'session_uuid'), True),
         )
 try:
     Session.create_table()
@@ -42,23 +42,30 @@ class SessionItem(object):
     def create(self, starting_url, session_uuid):
         try:
             # Update existing
-            _ = Session.get(Session.starting_url==starting_url, Session.session_uuid==session_uuid)
-            #if it exists then skip it
+            _ = Session.get(
+                Session.starting_url==starting_url,
+                Session.session_uuid==session_uuid
+            )
+            # If it exists then skip it
         except:
             # Create new status entry
             self.add(starting_url, session_uuid)
 
     def update_queue(self, starting_url, session_uuid, count):
-        session = Session.get(Session.starting_url == starting_url,
-                        Session.session_uuid == session_uuid)
+        session = Session.get(
+            Session.starting_url==starting_url,
+            Session.session_uuid==session_uuid
+        )
 
         session.queued = count
 
         session.save()
 
     def update_pages(self, starting_url, session_uuid, count):
-        session = Session.get(Session.starting_url == starting_url,
-                        Session.session_uuid == session_uuid)
+        session = Session.get(
+            Session.starting_url == starting_url,
+            Session.session_uuid == session_uuid
+        )
 
         session.pages = count
 
@@ -78,10 +85,12 @@ class SessionItem(object):
         return progress
 
 
-    def get_sessions(self, session_uuid = None):
+    def get_sessions(self, session_uuid=None):
 
         if session_uuid is not None:
-            session_objects = Session.filter(Session.session_uuid == session_uuid)
+            session_objects = Session.filter(
+                Session.session_uuid==session_uuid
+            )
         else:
             session_objects = Session.select()
 

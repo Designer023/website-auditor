@@ -15,7 +15,7 @@ class HTMLImporter(object):
     def import_html(self):
         request = self.url
 
-        if not '../' in request or not 'mailto' in request:
+        if '../' not in request or 'mailto' not in request:
             try:
                 response = urllib2.urlopen(request, timeout=30)
                 self.response_header = response.info()
@@ -37,4 +37,3 @@ class HTMLImporter(object):
             print "../ or mailto in url - skipping!"
             self.error = True
         # TODO: Save errors to DB for further analysis!
-

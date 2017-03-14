@@ -9,14 +9,13 @@ from settings.settings import *
 class Page(peewee.Model):
     url = peewee.TextField()
     session_uuid = peewee.CharField()
-    title = peewee.TextField(null = True)
+    title = peewee.TextField(null=True)
     header = peewee.TextField()
-    html_errors = peewee.TextField(null = True)
-    page_meta = peewee.TextField(null = True)
-    page_links = peewee.TextField(null = True)
+    html_errors = peewee.TextField(null=True)
+    page_meta = peewee.TextField(null=True)
+    page_links = peewee.TextField(null=True)
     starting_url = peewee.CharField()
-    yslow_results = peewee.TextField(null = True)
-
+    yslow_results = peewee.TextField(null=True)
 
     class Meta:
         database = MySQLDatabase(
@@ -31,7 +30,6 @@ try:
     Page.create_table()
 except:
     pass
-
 
 
 class PageItem(object):
@@ -50,7 +48,7 @@ class PageItem(object):
         page_meta = page_data['page_meta']
         page_links = page_data['page_links']
         starting_url = page_data['starting_url']
-        session_uuid=page_data['session_uuid']
+        session_uuid = page_data['session_uuid']
 
         try:
             title.decode('utf-8')
@@ -73,13 +71,15 @@ class PageItem(object):
     def upsert(self, page_data):
         try:
             # Update existing
-            page = Page.get(Page.url==page_data['url'], Page.session_uuid==page_data['session_uuid'])
+            page = Page.get(
+                Page.url == page_data['url'],
+                Page.session_uuid == page_data['session_uuid']
+            )
 
             try:
                 yslow_results = page_data['yslow_results']
             except:
                 yslow_results = None
-
 
             # update value with new value
             page.url = page_data['url']
@@ -96,7 +96,6 @@ class PageItem(object):
         except:
             # Create new status entry
             self.add(page_data)
-
 
     def count(self):
         return PageItem.select().count()
@@ -129,7 +128,7 @@ class PageItem(object):
 
             pages_list.append({
                 'id': item.id,
-                'url':item.url,
+                'url': item.url,
                 'title': item.title,
                 'header': item.header,
                 'html_errors': html_errors,
@@ -167,7 +166,7 @@ class PageItem(object):
 
             pages_list.append({
                 'id': item.id,
-                'url':item.url,
+                'url': item.url,
                 'title': item.title,
                 'header': item.header,
                 'html_errors': html_errors,
@@ -188,15 +187,12 @@ class PageItem(object):
         except:
             pass
 
-
-
     def get_page_data(self, id):
         try:
 
             page = Page.get(Page.id == id)
 
             page_data = {}
-
 
             try:
                 page_meta = ast.literal_eval(page.page_meta)
@@ -227,7 +223,3 @@ class PageItem(object):
 
         except:
             return "No Page found"
-
-
-
-
