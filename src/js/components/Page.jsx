@@ -77,7 +77,7 @@ class Page extends Component {
                           <h1 className="display-3">Page overview</h1>
                           <hr className="my-4" />
 
-                         <h3 className="lead">URL: <a href="{this.state.data.url}" target="_blank">{this.state.data.url}</a></h3>
+                         <h3 className="lead">URL: <a href={this.state.data.url} target="_blank">{this.state.data.url}</a></h3>
                          <h4>Session uuid: <Link to={"/session/" + this.props.params.session_id } >{this.props.params.session_id}</Link></h4>
 
                     </div>
