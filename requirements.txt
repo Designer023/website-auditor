@@ -7,3 +7,4 @@ eventlet
 flask-socketio
 pytidylib
 pep8
+coverage
