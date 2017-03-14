@@ -4,3 +4,5 @@ settings/settings.py
 node_modules/
 static/
 reports/*
+.coverage
+htmlcov/*
