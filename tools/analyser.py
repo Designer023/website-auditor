@@ -41,7 +41,7 @@ class Analyser(object):
     #     html_page = PageItem()
     #     html_page.update_yslow(self.url, yslow_results)
 
-    def analyse_pages(self, url, depth, performance):
+    def analyse_pages(self, url, depth, performance, w3c):
 
         backlog_item = BacklogItem()
         backlog_count = backlog_item.count_session(self.session_uuid)
@@ -67,6 +67,10 @@ class Analyser(object):
             html_validator = Validator(self.validator_options)
             page_data['html_errors'] = html_validator.validate_html(
                 parsed_html.html_data)
+
+            if w3c is True:
+                page_data['w3c'] = html_validator.validate_w3c(
+                    parsed_html.html_data)
 
             meta_parser = MetaParser()
             page_data['page_meta'] = meta_parser.parse_meta(
@@ -144,7 +148,7 @@ class Analyser(object):
 
             print ("Scanning: %s") % next_page.url
             self.analyse_pages(next_page.url,
-                               next_page.depth, next_page.performance)
+                               next_page.depth, next_page.performance, False)
 
             backlog_item.pop_first_session(self.session_uuid)
             self.visited_manager.upsert(next_page.url, self.session_uuid)
