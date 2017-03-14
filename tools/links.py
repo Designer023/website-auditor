@@ -1,3 +1,5 @@
+import re
+
 from bs4 import BeautifulSoup
 
 
@@ -57,10 +59,26 @@ class LinkParser(object):
                     # Just a regular internal link
                     internal_links.append(link)
 
+
+        # Get CSS Links
+
+        css_links = soup.find_all('link', rel="stylesheet", href=True)
+        css_links_all = list()
+        for css_link in css_links:
+            css_links_all.append(css_link['href'])
+
+        js_links = soup.find_all('script', src=re.compile(".*"))
+        js_links_all = list()
+        for js_link in js_links:
+            js_links_all.append(js_link['src'])
+
+
         parsed_links = {
             'internal': internal_links,
             'external': external_links,
-            'querystring': query_params
+            'querystring': query_params,
+            'css': css_links_all,
+            'javascript': js_links_all
         }
 
         return parsed_links
