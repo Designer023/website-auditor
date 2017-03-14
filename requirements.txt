@@ -7,4 +7,3 @@ eventlet
 flask-socketio
 pytidylib
 pep8
-pylint
