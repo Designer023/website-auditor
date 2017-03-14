@@ -3,7 +3,7 @@ import json
 
 from models.sessions import SessionItem
 from settings.settings import *
-from flask import Flask, jsonify, render_template, send_from_directory, request, Response
+from flask import Flask, jsonify, render_template, request, Response
 from flask_socketio import SocketIO
 from flask_socketio import send, emit
 
@@ -16,7 +16,7 @@ from tools.analyser import Analyser
 with open('tidy-options.json') as data_file:
     validator_options = json.load(data_file)
 
-app = Flask(__name__, static_url_path = "/static", static_folder = "static")
+app = Flask(__name__, static_url_path="/static", static_folder="static")
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
@@ -43,6 +43,7 @@ def get_sessions():
 
     return jsonify(session_list)
 
+
 # Session list - list of all sessions
 @app.route('/api/v1.0/auditor/sessions/<path:session_uuid>', methods=['GET'])
 def get_session_with_uuid(session_uuid):
@@ -54,7 +55,6 @@ def get_session_with_uuid(session_uuid):
     return jsonify(session_list)
 
 
-
 # Session list - list of all sessions
 @app.route('/api/v1.0/auditor/results/<path:session_uuid>', methods=['GET'])
 def get_all_results(session_uuid):
@@ -64,7 +64,9 @@ def get_all_results(session_uuid):
 
     return jsonify(pages_list)
 
-# # Session details - url, overall stats (list of results provided by get_session_results)
+
+# # Session details - url, overall stats
+# (list of results provided by get_session_results)
 # @app.route('/api/v1.0/auditor/sessions/<path:session_uuid>', methods=['GET'])
 # def get_session_details(session_uuid):
 #
@@ -84,7 +86,8 @@ def get_all_results(session_uuid):
 
 
 # # Results list for session ERRORS
-# @app.route('/api/v1.0/auditor/page/<path:session_uuid>/errors', methods=['GET'])
+# @app.route('/api/v1.0/auditor/page/<path:session_uuid>/errors',
+# methods=['GET'])
 # def get_page_in_session_errors(session_uuid):
 #
 #     pages = PageItem()
@@ -100,10 +103,6 @@ def get_all_results(session_uuid):
 #     pages_list = pages.getPagesForSession(session_uuid)
 #
 #     return jsonify(pages_list)
-
-
-
-
 #
 @app.route('/api/v1.0/auditor/detail/<path:page_id>', methods=['GET'])
 def get_detail_for_page(page_id):
@@ -116,7 +115,6 @@ def get_detail_for_page(page_id):
     data['data'] = page_data
 
     return jsonify(data)
-
 
 
 # @app.route('/api/v1.0/auditor/yslow/<path:page_id>', methods=['GET'])
@@ -132,7 +130,6 @@ def get_detail_for_page(page_id):
 #                         validator_options)
 #
 #     analyser.generate_yslow()
-
 
     # # Get the generated updated data
     #
@@ -151,6 +148,7 @@ def get_detail_for_page(page_id):
 
 
 # CATCH ALL FOR FRONTEND
+
 
 @app.route('/')
 def root():

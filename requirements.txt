@@ -6,3 +6,4 @@ flask
 eventlet
 flask-socketio
 pytidylib
+pep8

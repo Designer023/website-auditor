@@ -1,4 +1,7 @@
-import os, logging, subprocess, json
+import os
+import logging
+import subprocess
+import json
 
 
 APP_ROOT = os.path.dirname(os.path.realpath(__file__))
