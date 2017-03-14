@@ -70,7 +70,7 @@ class Sessions extends Component {
             )
         } else {
             return (
-                <div className="container">
+                <div>
                     <div className="jumbotron">
                           <h1 className="display-3">Sessions</h1>
                           <hr className="my-4" />

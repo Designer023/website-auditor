@@ -12,6 +12,7 @@ import PageHeaders from './components/PageHeaders';
 import PageMetaTags from './components/PageMetaTags';
 import PagePerformance from './components/PagePerformance';
 import PageOverview from './components/PageOverview';
+import NavBar from './components/NavBar'
 
 // Let the window know there is a React element on the page
 // This means the react dev tools will work
@@ -20,18 +21,21 @@ if (typeof window !== 'undefined') {
 }
 
 ReactDOM.render((
-     <Router history={browserHistory}>
-        <Route path="/" component={Sessions}/>
-         <Route path="/session/" component={Sessions}/>
-         <Route path="/session/:session_id" component={SessionsDetail}/>
-         <Route path="/session/:session_id/page/:page_id" component={Page} >
-             <Route path="/session/:session_id/page/:page_id/overview" component={PageOverview}/>
-             <Route path="/session/:session_id/page/:page_id/errors" component={PageErrors}/>
-             <Route path="/session/:session_id/page/:page_id/headers" component={PageHeaders}/>
-             <Route path="/session/:session_id/page/:page_id/meta" component={PageMetaTags}/>
-             <Route path="/session/:session_id/page/:page_id/performance" component={PagePerformance}/>
-         </Route>
-      </Router>
+    <div>
+        <NavBar />
+         <Router history={browserHistory}>
+            <Route path="/" component={Sessions}/>
+             <Route path="/session/" component={Sessions}/>
+             <Route path="/session/:session_id" component={SessionsDetail}/>
+             <Route path="/session/:session_id/page/:page_id" component={Page} >
+                 <Route path="/session/:session_id/page/:page_id/overview" component={PageOverview}/>
+                 <Route path="/session/:session_id/page/:page_id/errors" component={PageErrors}/>
+                 <Route path="/session/:session_id/page/:page_id/headers" component={PageHeaders}/>
+                 <Route path="/session/:session_id/page/:page_id/meta" component={PageMetaTags}/>
+                 <Route path="/session/:session_id/page/:page_id/performance" component={PagePerformance}/>
+             </Route>
+          </Router>
+    </div>
     ),
     document.getElementById('app')
 );

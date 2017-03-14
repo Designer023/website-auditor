@@ -74,11 +74,11 @@ class Page extends Component {
                 <div className="container">
 
                      <div className="jumbotron">
-                          <h1 className="display-3">Page overview for {this.props.params.page_id}</h1>
+                          <h1 className="display-3">Page overview</h1>
                           <hr className="my-4" />
 
-                            <h3 className="lead">URL for crawl</h3>
-                            <h4>Session uuid: {this.props.params.session_id}</h4>
+                         <h3 className="lead">URL: <a href="{this.state.data.url}" target="_blank">{this.state.data.url}</a></h3>
+                         <h4>Session uuid: <Link to={"/session/" + this.props.params.session_id } >{this.props.params.session_id}</Link></h4>
 
                     </div>
 
@@ -95,6 +95,7 @@ class Page extends Component {
                             <span
                                 className="navbar-toggler-icon"></span>
                         </button>
+                        <a className="navbar-brand" href="/">Page</a>
                         <div className="collapse navbar-collapse"
                              id="navbarNav">
                             <ul className="navbar-nav">
