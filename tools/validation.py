@@ -1,7 +1,7 @@
 import time
 from tidylib import tidy_document
 
-from tools.plugins.w3v_validator import W3CValidator
+from tools.plugins.w3c_validator import W3CValidator
 
 
 class Validator(object):

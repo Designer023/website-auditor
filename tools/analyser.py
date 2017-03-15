@@ -31,17 +31,7 @@ class Analyser(object):
         self.validator_options = validator_options
         self.analyse_performance = analyse_performance
 
-    # def update_yslow(self):
-    #     """
-    #
-    #     :return:
-    #     """
-    #     yslow_results = generate_yslow(self.url)
-    #
-    #     html_page = PageItem()
-    #     html_page.update_yslow(self.url, yslow_results)
-
-    def analyse_pages(self, url, depth, performance, w3c):
+    def analyse_pages(self, url, depth, performance, validate_w3c):
 
         backlog_item = BacklogItem()
         backlog_count = backlog_item.count_session(self.session_uuid)
@@ -72,7 +62,7 @@ class Analyser(object):
 
             # Custom Validators
             # W3C - HTML
-            if w3c is True:
+            if validate_w3c is True:
                 page_data['w3c'] = html_validator.validate_w3c(
                     parsed_html.html_data)
 
@@ -165,5 +155,9 @@ class Analyser(object):
             total_pages = progress['queue_count'] + progress['page_count']
             print ("%i%% complete. %i/%i pages crawled") % (
                 progress['percent'], progress['page_count'], total_pages)
+
+        # Update session details to complete
+        session = SessionItem()
+        session.update_status_code(self.starting_url, self.session_uuid, 3)
 
         print "Analysis complete"

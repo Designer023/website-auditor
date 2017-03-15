@@ -1,16 +1,24 @@
 import peewee
+import time
 from peewee import *
 
 from settings.settings import *
 
+STATUS_CHOICES = (
+    (0, 'Initialised'),
+    (1, 'Paused'),
+    (2, 'Running'),
+    (3, 'Complete'),
+    (4, 'Archived')
+)
 
 class Session(peewee.Model):
     starting_url = peewee.CharField()
     session_uuid = peewee.CharField()
     pages = peewee.IntegerField()
     queued = peewee.IntegerField()
-
-
+    status_code = peewee.IntegerField()
+    timestamp = peewee.TimestampField()
 
     class Meta:
         database = MySQLDatabase(
@@ -31,11 +39,15 @@ class SessionItem(object):
 
     def add(self, starting_url, session_uuid):
 
+        ts = time.time()
+
         session = Session(
             starting_url=starting_url,
             session_uuid=session_uuid,
             pages=0,
-            queued=0
+            queued=0,
+            status=0,
+            timestamp=ts
             )
         session.save()
 
@@ -58,6 +70,16 @@ class SessionItem(object):
         )
 
         session.queued = count
+
+        session.save()
+
+    def update_status_code(self, starting_url, session_uuid, status_code):
+        session = Session.get(
+            Session.starting_url==starting_url,
+            Session.session_uuid==session_uuid
+        )
+
+        session.status_code = status_code
 
         session.save()
 
@@ -92,16 +114,22 @@ class SessionItem(object):
                 Session.session_uuid==session_uuid
             )
         else:
-            session_objects = Session.select()
+            session_objects = Session.select()\
+                .order_by(Session.timestamp.desc())
 
         sessions = list()
 
         for item in session_objects:
+            status_dict = dict(STATUS_CHOICES)
             session = {}
+            session['id'] = item.id
             session['uuid'] = item.session_uuid
             session['url'] = item.starting_url
             session['pages'] = item.pages
             session['queue'] = item.queued
+            session['status'] = status_dict[item.status_code]
+            session['status_code'] = item.status_code
+            session['timestamp'] = item.timestamp
 
             total_items = item.pages + item.queued
             try:

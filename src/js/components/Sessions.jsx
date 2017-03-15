@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 
+var moment = require('moment');
+
 import { Link } from 'react-router'
 
 class Sessions extends Component {
@@ -57,9 +59,13 @@ class Sessions extends Component {
                 <tr key={session.uuid}>
                     <td><Link to={"/session/" + session.uuid } >{session.url}</Link></td>
                     <td>{session.uuid}</td>
+                    <td>{moment(session.timestamp).fromNow()}</td>
+
                     <td>{session.pages}</td>
                     <td>{session.queue}</td>
                     <td>{session.percent}%</td>
+                    <td>{session.status}</td>
+                    <td>Actions</td>
                 </tr>
             )
         });
@@ -93,7 +99,11 @@ class Sessions extends Component {
                                     </th>
 
                                     <th>
-                                        Pages
+                                        When
+                                    </th>
+
+                                    <th>
+                                        Crawled
                                     </th>
 
                                     <th>
@@ -103,6 +113,16 @@ class Sessions extends Component {
                                     <th>
                                         Completion %
                                     </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Actions
+                                    </th>
+
+
                                 </tr>
                             </thead>
 
