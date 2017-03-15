@@ -29,6 +29,11 @@ if __name__ == "__main__":
                         type=str,
                         help='Resume a previous session by adding '
                              'the session key')
+    parser.add_argument('-t', '--throttle',
+                        default=3,
+                        type=int,
+                        help='Time (seconds) between each page test. '
+                             'Low is harder on servers, high takes longer!')
     parser.add_argument('-p', '--performance',
                         dest='performance',
                         action='store_true',

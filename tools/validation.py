@@ -1,9 +1,8 @@
-import requests
 import time
 from tidylib import tidy_document
 
+from tools.plugins.w3v_validator import W3CValidator
 
-VALIDATOR_URL = 'https://validator.w3.org/nu/?out=json'
 
 
 class Validator(object):
@@ -25,12 +24,9 @@ class Validator(object):
 
         time.sleep(3)
 
-        headers = {'Content-Type': 'text/html'}
+        validator = W3CValidator()
+        validated_result = validator.validateHTML(html)
 
-        response = requests.post(VALIDATOR_URL,
-                                 files=dict(out='json', content=html),
-                                 headers=headers)
+        print validated_result
 
-        print response.content
-
-        return response.content
+        return validated_result
