@@ -4,8 +4,11 @@ from tidylib import tidy_document
 from tools.plugins.w3v_validator import W3CValidator
 
 
-
 class Validator(object):
+    '''
+    A validator object that can be used to run various validation types on
+    HTML. CSS and JS to be added going forward
+    '''
     options = {}
 
     def __init__(self, options):
@@ -20,13 +23,11 @@ class Validator(object):
 
     def validate_w3c(self, html):
 
-        print "Validating with W3C"
+        print "Validating with W3C..."
 
         time.sleep(3)
 
         validator = W3CValidator()
         validated_result = validator.validateHTML(html)
-
-        print validated_result
 
         return validated_result

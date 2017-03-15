@@ -65,9 +65,13 @@ class Analyser(object):
             page_data['header'] = parsed_html.response_header
 
             html_validator = Validator(self.validator_options)
+
+            # Always use the default HTML validator
             page_data['html_errors'] = html_validator.validate_html(
                 parsed_html.html_data)
 
+            # Custom Validators
+            # W3C - HTML
             if w3c is True:
                 page_data['w3c'] = html_validator.validate_w3c(
                     parsed_html.html_data)
