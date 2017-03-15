@@ -6,18 +6,17 @@ from settings.settings import *
 
 STATUS_CHOICES = (
     (0, 'Initialised'),
-    (1, 'Paused'),
-    (2, 'Running'),
-    (3, 'Complete'),
-    (4, 'Archived')
+    (1, 'Incomplete'),
+    (2, 'Complete'),
+    (3, 'Archived')
 )
 
 class Session(peewee.Model):
     starting_url = peewee.CharField()
     session_uuid = peewee.CharField()
-    pages = peewee.IntegerField()
-    queued = peewee.IntegerField()
-    status_code = peewee.IntegerField()
+    pages = peewee.IntegerField(default=0)
+    queued = peewee.IntegerField(default=0)
+    status_code = peewee.IntegerField(default=0)
     timestamp = peewee.TimestampField()
 
     class Meta:
@@ -62,6 +61,19 @@ class SessionItem(object):
         except:
             # Create new status entry
             self.add(starting_url, session_uuid)
+
+    def update_stats(self, starting_url, session_uuid, queue_count, page_count, status_code):
+        session = Session.get(
+            Session.starting_url == starting_url,
+            Session.session_uuid == session_uuid
+        )
+
+        session.queued = queue_count
+        session.pages = page_count
+        session.status_code = status_code
+
+        session.save()
+
 
     def update_queue(self, starting_url, session_uuid, count):
         session = Session.get(

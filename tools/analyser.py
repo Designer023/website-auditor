@@ -31,6 +31,22 @@ class Analyser(object):
         self.validator_options = validator_options
         self.analyse_performance = analyse_performance
 
+    def update_session_stats(self, status_code):
+        session = SessionItem()
+        html_page = PageItem()
+        backlog_item = BacklogItem()
+
+        complete_count = html_page.count_session(self.session_uuid)
+        backlog_count = backlog_item.count_session(self.session_uuid)
+
+        session.update_stats(
+            self.starting_url,
+            self.session_uuid,
+            backlog_count,
+            complete_count,
+            status_code
+        )
+
     def analyse_pages(self, url, depth, performance, validate_w3c):
 
         backlog_item = BacklogItem()
@@ -119,6 +135,10 @@ class Analyser(object):
 
     def start(self, resume_session):
 
+        session = SessionItem()
+        # Update session details to incomplete since we are started!
+        session.update_status_code(self.starting_url, self.session_uuid, 1)
+
         backlog_item = BacklogItem()
 
         # If we're not resuming we better add something to start with!
@@ -149,15 +169,15 @@ class Analyser(object):
             print ("Removed: %s from the backlog "
                    "and added it to the visted list") % next_page.url
 
-            session = SessionItem()
+            self.update_session_stats(1)
+
             progress = session.session_progress(self.starting_url,
                                                 self.session_uuid)
             total_pages = progress['queue_count'] + progress['page_count']
             print ("%i%% complete. %i/%i pages crawled") % (
                 progress['percent'], progress['page_count'], total_pages)
 
-        # Update session details to complete
-        session = SessionItem()
-        session.update_status_code(self.starting_url, self.session_uuid, 3)
+
+        self.update_session_stats(2)
 
         print "Analysis complete"

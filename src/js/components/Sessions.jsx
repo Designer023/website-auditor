@@ -14,6 +14,7 @@ class Sessions extends Component {
             sessions: []
         }
 
+        this.retest = this.retest.bind(this)
         this.getData = this.getData.bind(this);
     }
 
@@ -52,6 +53,21 @@ class Sessions extends Component {
         // }
     }
 
+
+    retest() {
+
+        let retest_end_point = '/api/v1.0/auditor/sessions';
+
+        $.ajax({
+            type: 'GET',
+            url: retest_end_point,
+            success: function (data) {
+
+            }.bind(this)
+        });
+
+    }
+
     render() {
 
         let sessions = this.state.sessions.map(function(session){
@@ -65,10 +81,14 @@ class Sessions extends Component {
                     <td>{session.queue}</td>
                     <td>{session.percent}%</td>
                     <td>{session.status}</td>
-                    <td>Actions</td>
+                    <td>
+                        <span onClick={this.retest}>Retest</span>
+
+
+                    </td>
                 </tr>
             )
-        });
+        }.bind(this));
 
         if (this.state.loading === true) {
             return (
