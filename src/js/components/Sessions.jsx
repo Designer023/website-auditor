@@ -8,14 +8,16 @@ import { Link } from 'react-router'
 class Sessions extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             loading: true,
             sessions: []
-        }
+        };
 
-        this.retest = this.retest.bind(this)
         this.getData = this.getData.bind(this);
+
+        this.retest = this.retest.bind(this);
+        this.delete = this.delete.bind(this)
     }
 
     componentDidMount() {
@@ -68,6 +70,26 @@ class Sessions extends Component {
 
     }
 
+    delete(uuid) {
+        let delete_end_point = '/api/v1.0/auditor/sessions/' + uuid;
+
+        $.ajax({
+            type: 'DELETE',
+            url: delete_end_point,
+            success: function (data) {
+
+                //delete success
+                if (data === true) {
+                    this.getData()
+                } else {
+                    // Handle deletion error
+                    alert('error deleting session: ' + uuid)
+                }
+            }.bind(this)
+        });
+    }
+
+
     render() {
 
         let sessions = this.state.sessions.map(function(session){
@@ -82,7 +104,7 @@ class Sessions extends Component {
                     <td>{session.percent}%</td>
                     <td>{session.status}</td>
                     <td>
-                        <span onClick={this.retest}>Retest</span>
+                        <span onClick={this.retest}>Retest</span> | <span onClick={() => this.delete(session.uuid)}>Delete</span>
 
 
                     </td>

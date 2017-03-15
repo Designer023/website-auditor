@@ -34,6 +34,10 @@ except:
 
 class PageItem(object):
 
+    def delete(self, session_uuid):
+        query = Page.delete().where(Page.session_uuid == session_uuid)
+        query.execute()
+
     def add(self, page_data):
 
         try:

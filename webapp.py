@@ -1,6 +1,7 @@
 #!flask/bin/python
 import json
 
+from models.backlog import BacklogItem
 from models.sessions import SessionItem
 # from settings.settings import *
 from flask import Flask, jsonify, render_template, request, Response
@@ -11,6 +12,7 @@ from flask_socketio import send, emit
 from models.page import PageItem
 
 # Setup Flask App
+from models.visited_log import VisitedItem
 from tools.analyser import Analyser
 
 with open('tidy-options.json') as data_file:
@@ -45,14 +47,35 @@ def get_sessions():
 
 
 # Session list - list of all sessions
-@app.route('/api/v1.0/auditor/sessions/<path:session_uuid>', methods=['GET'])
+@app.route('/api/v1.0/auditor/sessions/<path:session_uuid>', methods=['GET', 'DELETE'])
 def get_session_with_uuid(session_uuid):
+    if request.method == 'DELETE':
+        # DELETE ALL TYPES BELONGING TO SESSION
 
-    sessions = SessionItem()
-    session_list = {}
-    session_list['sessions'] = sessions.get_sessions(session_uuid)
+        # Find queue
+        backlogged = BacklogItem()
+        backlogged.delete(session_uuid)
 
-    return jsonify(session_list)
+        # Find pages
+        pages = PageItem()
+        pages.delete(session_uuid)
+
+        # Find session
+        sessions = SessionItem()
+        sessions.delete(session_uuid)
+
+        # Find visited
+        visited = VisitedItem()
+        visited.delete(session_uuid)
+
+        return jsonify(True)
+
+    else:
+        sessions = SessionItem()
+        session_list = {}
+        session_list['sessions'] = sessions.get_sessions(session_uuid)
+
+        return jsonify(session_list)
 
 
 # Session list - list of all sessions

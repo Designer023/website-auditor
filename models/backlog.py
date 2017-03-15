@@ -28,6 +28,10 @@ except:
 
 class BacklogItem(object):
 
+    def delete(self, session_uuid):
+        query = Backlog.delete().where(Backlog.session_uuid == session_uuid)
+        query.execute()
+
     def add(self, url, starting_url, session_uuid, depth, performance):
 
         item = Backlog(

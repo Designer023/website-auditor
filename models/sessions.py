@@ -62,7 +62,15 @@ class SessionItem(object):
             # Create new status entry
             self.add(starting_url, session_uuid)
 
-    def update_stats(self, starting_url, session_uuid, queue_count, page_count, status_code):
+    def delete(self, session_uuid):
+        session = Session.get(
+            Session.session_uuid == session_uuid
+        )
+
+        session.delete_instance()
+
+    def update_stats(self, starting_url, session_uuid,
+                     queue_count, page_count, status_code):
         session = Session.get(
             Session.starting_url == starting_url,
             Session.session_uuid == session_uuid

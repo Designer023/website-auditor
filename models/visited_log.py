@@ -24,6 +24,10 @@ except:
 
 class VisitedItem(object):
 
+    def delete(self, session_uuid):
+        query = Visited.delete().where(Visited.session_uuid == session_uuid)
+        query.execute()
+
     def visited_this_session(self, url, session_uuid):
         has_visited = Visited.filter(
             Visited.url == url,
