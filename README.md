@@ -8,17 +8,13 @@ This tool is currently a WIP. The aim is to create a front end webapp that a dev
 
 Currently the app runs from the command line as `python main.py` (see installation notes) and will crawl the url provided to the depth provided and generate a set of reports (csv) in the reports directory.
 
-The front end web app side of this project is further behind.
-
-Please feel free to submit PRs and bugs/issues, but as this is currently a WIP I may need to drop features or change direction at a short notice. There will be a roadmap in the near future.
+[bugs/issues](https://github.com/Designer023/website-auditor/issues)
 
 ## Why
 
-I needed to audit a huge website that wan't accessible publicly. The audit was for validation, performance and SEO so I decided to create a tool that would generate what I needed so I can focus on activly improving things.
+To audit websites, some of which aren't accessible publicly. The audit is for validation, performance and SEO.
 
 There are a few tools out there that do bits of what I am after, but either they cost money, are very slow and also don't do everything that I needed in one place - so I created [another tool](https://xkcd.com/927/)!
-
-I'm also trying to learn more Python and backend bits!
 
 ## Installation
 
@@ -70,18 +66,15 @@ Resume session with depth of 3 links and do performance reviews using YSlow.
 
 ## View Results
 
-python webapp.py
+### CSV
+
+If the CSVs flag is on then reports will be generated into the `reports/` directory
+
+### Web app
+
+Run `python webapp.py` and visit `http://127.0.0.1:5000`
 
 
 ## Basic Roadmap
 
-- ~~Depth and crawling fixes~~
-- ~~Session crawling fixes (currently ignores session due to DB issues! - Peewee!)~~
-- Threading of performance tests (YSlow)
-- ~~Crawls saved to db so stats and other details can be saved~~
-- ~~Frontend detail pages~~
-- Frontend start crawl page
-- Frontend remove crawl from history
-- Frontend live updates to/from backend via SocketIO
-- ???
-- $$$
+See the [issues log for enhancements](https://github.com/Designer023/website-auditor/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement)
