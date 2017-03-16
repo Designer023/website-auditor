@@ -16,14 +16,18 @@ class Sessions extends Component {
 
         this.getData = this.getData.bind(this);
 
-        this.startCrawl = this.startCrawl.bind(this)
+        this.startCrawl = this.startCrawl.bind(this);
 
         this.retest = this.retest.bind(this);
-        this.delete = this.delete.bind(this)
+        this.delete = this.delete.bind(this);
+        this.updateData = this.updateData.bind(this);
     }
 
     componentDidMount() {
         this.getData();
+
+        // Every 5 seconds get more data
+        setInterval(this.updateData, (5 * 1000));
     }
 
     startCrawl(e) {
@@ -31,6 +35,8 @@ class Sessions extends Component {
 
         //get value from url submitted
         let test_url = (this.textInput.value );
+        let test_depth = (this.depthInput.value);
+        let performance_flag = (this.performanceInput.checked);
 
         //validate
         let valid = /^(ftp|http|https):\/\/[^ "]+$/.test(test_url);
@@ -38,7 +44,14 @@ class Sessions extends Component {
         if (valid === true) {
             //Valid - send all of the AJAXES!
 
-            let post_data = { url: test_url };
+            let post_data = {
+                url: test_url,
+                depth: test_depth,
+                performance: performance_flag
+
+            };
+
+            console.log(post_data);
 
             let crawl_end_point = '/api/v1.0/auditor/sessions';
 
@@ -88,6 +101,30 @@ class Sessions extends Component {
                 }.bind(this)
             });
         // }
+    }
+
+    updateData() {
+        // Assume we have data already from the initial getData callback.
+        // No loading state will be triggered!
+
+        let queue_end_point = '/api/v1.0/auditor/sessions';
+
+        $.ajax({
+            type: 'GET',
+            url: queue_end_point,
+            success: function (data) {
+
+                // Ste loading to false as we now have data!
+                this.setState(
+                    function (prevState, props) {
+                        return {
+                            sessions: data.sessions,
+                            loading: false,
+                        }
+                    })
+            }.bind(this)
+        });
+
     }
 
 
@@ -164,8 +201,22 @@ class Sessions extends Component {
                      <div className="card mt-5">
                         <div className="card-block">
                              <h2>Start crawl</h2>
-                            <input type="text" ref={(input) => { this.textInput = input; }} />
-                            <input type="submit" ref={(input) => { this.submit = input; }} onClick={this.startCrawl}/>
+                            <label>
+                                Crawl URL
+                                <input type="text" ref={(el) => { this.textInput = el; }} />
+                            </label>
+
+                            <label>
+                                Crawl Depth - 0 is just the crawl url and does not follow links on that page
+                                <input type="number" ref={(el) => { this.depthInput = el; }} />
+                            </label>
+
+                            <label>
+                                Analyse performance
+                                <input type="checkbox" ref={(el) => { this.performanceInput = el; }} />
+                            </label>
+
+                            <input type="submit" ref={(el) => { this.submit = el; }} onClick={this.startCrawl}/>
                         </div>
                      </div>
 

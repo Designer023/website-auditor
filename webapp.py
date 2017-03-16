@@ -26,25 +26,18 @@ socketio = SocketIO(app)
 
 # Setup the routes for Flask
 
-# Sockets
-#
-# @socketio.on('message')
-# def handle_message(message):
-#     emit('results_updated', 'huzzah ' + str(message))
-#
+# Threaded processes (to handle queue backlog)
 
-# API
-
-def start(url, session_uuid):
+def start(url, session_uuid, depth, performance):
     session = SessionItem()
     session.create(url, session_uuid)
 
     analyser = Analyser(url,
                         url,
                         session_uuid,
-                        0,
+                        depth,
                         validator_options,
-                        False)
+                        performance)
     resume_session = False
 
     analyser.start(resume_session)
@@ -52,7 +45,7 @@ def start(url, session_uuid):
     # socketio.send('results_updated', True)
     # socketio.emit('message')
 
-
+# API
 
 # Session list - list of all sessions
 @app.route('/api/v1.0/auditor/sessions', methods=['GET', 'POST'])
@@ -60,12 +53,14 @@ def get_sessions():
     if request.method == 'POST':
         form_data = request.form
         url = form_data['url']
+        depth = form_data['depth']
+        performance = form_data['performance']
 
         # Generate a uniquie timestamp based on device and time /
         session_uuid = uuid.uuid1()
 
 
-        t = threading.Thread(target=start, args=(url, session_uuid))
+        t = threading.Thread(target=start, args=(url, session_uuid, depth, performance))
         t.daemon = True
         t.start()
 
