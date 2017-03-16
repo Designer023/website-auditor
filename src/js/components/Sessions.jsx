@@ -16,12 +16,47 @@ class Sessions extends Component {
 
         this.getData = this.getData.bind(this);
 
+        this.startCrawl = this.startCrawl.bind(this)
+
         this.retest = this.retest.bind(this);
         this.delete = this.delete.bind(this)
     }
 
     componentDidMount() {
         this.getData();
+    }
+
+    startCrawl(e) {
+        e.preventDefault();
+
+        //get value from url submitted
+        let test_url = (this.textInput.value );
+
+        //validate
+        let valid = /^(ftp|http|https):\/\/[^ "]+$/.test(test_url);
+
+        if (valid === true) {
+            //Valid - send all of the AJAXES!
+
+            let post_data = { url: test_url };
+
+            let crawl_end_point = '/api/v1.0/auditor/sessions';
+
+            $.ajax({
+                type: 'POST',
+                data: post_data,
+                url: crawl_end_point,
+                success: function (data) {
+                    console.log(data)
+                }.bind(this)
+            });
+
+
+        } else {
+            // Flag up a warning!
+            alert("That's not a url!");
+            return false;
+        }
     }
 
 
@@ -125,6 +160,16 @@ class Sessions extends Component {
 
 
                     </div>
+
+                     <div className="card mt-5">
+                        <div className="card-block">
+                             <h2>Start crawl</h2>
+                            <input type="text" ref={(input) => { this.textInput = input; }} />
+                            <input type="submit" ref={(input) => { this.submit = input; }} onClick={this.startCrawl}/>
+                        </div>
+                     </div>
+
+
                     <div className="card mt-5">
                         <div className="card-block">
 

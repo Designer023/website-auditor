@@ -99,38 +99,37 @@ class SessionResults extends Component {
              return (
 
                  <div>
-
-                    <div className="card mt-5">
+                     <div className="card mt-5">
                         <div className="card-block">
                              <h2>Pages crawled</h2>
 
                              <table className="table table-striped">
-                            <thead className="thead-inverse">
-                                <tr>
-                                    <th>
-                                        URL
-                                    </th>
-                                    <th>
-                                        Title
-                                    </th>
+                                <thead className="thead-inverse">
+                                    <tr>
+                                        <th>
+                                            URL
+                                        </th>
+                                        <th>
+                                            Title
+                                        </th>
 
 
-                                    <th>
-                                        Errors
-                                    </th>
-                                    <th>
-                                        Performance
-                                    </th>
+                                        <th>
+                                            Errors
+                                        </th>
+                                        <th>
+                                            Performance
+                                        </th>
 
-                                </tr>
-                            </thead>
+                                    </tr>
+                                </thead>
 
-                            <tbody>
+                                <tbody>
 
-                                {page_results}
+                                    {page_results}
 
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
                         </div>
                      </div>
                 </div>

@@ -24,6 +24,7 @@ class Analyser(object):
 
     def __init__(self, url, starting_url, session_uuid,
                  max_depth, validator_options, analyse_performance):
+        # type: (object, object, object, object, object, object) -> object
         self.url = url
         self.starting_url = starting_url
         self.session_uuid = session_uuid

@@ -1,5 +1,7 @@
 #!flask/bin/python
 import json
+import threading
+import uuid
 
 from models.backlog import BacklogItem
 from models.sessions import SessionItem
@@ -24,7 +26,6 @@ socketio = SocketIO(app)
 
 # Setup the routes for Flask
 
-
 # Sockets
 #
 # @socketio.on('message')
@@ -32,19 +33,50 @@ socketio = SocketIO(app)
 #     emit('results_updated', 'huzzah ' + str(message))
 #
 
-
 # API
 
+def start(url, session_uuid):
+    session = SessionItem()
+    session.create(url, session_uuid)
+
+    analyser = Analyser(url,
+                        url,
+                        session_uuid,
+                        0,
+                        validator_options,
+                        False)
+    resume_session = False
+
+    analyser.start(resume_session)
+    # Socket IO and threads... :( unhappy face! TBC
+    # socketio.send('results_updated', True)
+    # socketio.emit('message')
+
+
+
 # Session list - list of all sessions
-@app.route('/api/v1.0/auditor/sessions', methods=['GET'])
+@app.route('/api/v1.0/auditor/sessions', methods=['GET', 'POST'])
 def get_sessions():
+    if request.method == 'POST':
+        form_data = request.form
+        url = form_data['url']
 
-    sessions = SessionItem()
-    session_list = {}
-    session_list['sessions'] = sessions.get_sessions()
+        # Generate a uniquie timestamp based on device and time /
+        session_uuid = uuid.uuid1()
 
-    return jsonify(session_list)
 
+        t = threading.Thread(target=start, args=(url, session_uuid))
+        t.daemon = True
+        t.start()
+
+
+        return jsonify(True)
+    else:
+        sessions = SessionItem()
+        session_list = {}
+        session_list['sessions'] = sessions.get_sessions()
+
+        return jsonify(session_list)
 
 # Session list - list of all sessions
 @app.route('/api/v1.0/auditor/sessions/<path:session_uuid>', methods=['GET', 'DELETE'])
@@ -77,7 +109,6 @@ def get_session_with_uuid(session_uuid):
 
         return jsonify(session_list)
 
-
 # Session list - list of all sessions
 @app.route('/api/v1.0/auditor/results/<path:session_uuid>', methods=['GET'])
 def get_all_results(session_uuid):
@@ -87,46 +118,6 @@ def get_all_results(session_uuid):
 
     return jsonify(pages_list)
 
-
-# # Session details - url, overall stats
-# (list of results provided by get_session_results)
-# @app.route('/api/v1.0/auditor/sessions/<path:session_uuid>', methods=['GET'])
-# def get_session_details(session_uuid):
-#
-#     pages = PageItem()
-#     pages_list = pages.getPages()
-#
-#     return jsonify(pages_list)
-
-# # Result list - depreciated by Session details
-# @app.route('/api/v1.0/auditor/results', methods=['GET'])
-# def get_sessions():
-#
-#     pages = PageItem()
-#     pages_list = pages.getPages()
-#
-#     return jsonify(pages_list)
-
-
-# # Results list for session ERRORS
-# @app.route('/api/v1.0/auditor/page/<path:session_uuid>/errors',
-# methods=['GET'])
-# def get_page_in_session_errors(session_uuid):
-#
-#     pages = PageItem()
-#     pages_list = pages.getPagesForSession(session_uuid)
-#
-#     return jsonify(pages_list)
-#
-# # Results list for session
-# @app.route('/api/v1.0/auditor/page/<path:session_uuid>', methods=['GET'])
-# def get_page_overview(session_uuid):
-#
-#     pages = PageItem()
-#     pages_list = pages.getPagesForSession(session_uuid)
-#
-#     return jsonify(pages_list)
-#
 @app.route('/api/v1.0/auditor/detail/<path:page_id>', methods=['GET'])
 def get_detail_for_page(page_id):
 
@@ -139,39 +130,7 @@ def get_detail_for_page(page_id):
 
     return jsonify(data)
 
-
-# @app.route('/api/v1.0/auditor/yslow/<path:page_id>', methods=['GET'])
-# def update_yslow_for_page(page_id):
-#
-#     pages = PageItem()
-#     page_data = pages.get_page_data(page_id)
-#
-#     analyser = Analyser(page_data['url'],
-#                         page_data['starting_url'],
-#                         0,
-#                         0,
-#                         validator_options)
-#
-#     analyser.generate_yslow()
-
-    # # Get the generated updated data
-    #
-    # page_data = pages.get_page_data(page_id)
-    #
-    # data = {}
-    # data['data'] = page_data
-    #
-    # return jsonify(data)
-
-
-# @app.route('/ping')
-# def ping():
-#     socketio.emit( 'Hello', namespace='results_updated')
-#     return jsonify({'ping': True})
-
-
-# CATCH ALL FOR FRONTEND
-
+# CATCH ALL FOR FRONTEND - Handled by reaact router unless caught above!
 
 @app.route('/')
 def root():

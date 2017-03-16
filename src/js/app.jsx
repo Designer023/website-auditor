@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import { Router, Route, browserHistory } from 'react-router'
 
-import Dashboard from './components/Dashboard';
+
 import Sessions from './components/Sessions';
 import SessionsDetail from './components/SessionsDetail';
 import Page from './components/Page';
