@@ -6,7 +6,7 @@ from settings.settings import *
 
 STATUS_CHOICES = (
     (0, 'Initialised'),
-    (1, 'Incomplete'),
+    (1, 'Processing'),
     (2, 'Complete'),
     (3, 'Archived')
 )

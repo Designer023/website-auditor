@@ -165,19 +165,42 @@ class Sessions extends Component {
     render() {
 
         let sessions = this.state.sessions.map(function(session){
+            let percentStyle = {
+                width: session.percent + '%'
+            };
+
+            let percentBarStyle = ' bg-danger ';
+            if (session.percent > 10 && session.percent <= 25) {
+                percentBarStyle = ' bg-warning ';
+            } else if (session.percent > 25 && session.percent < 100) {
+                percentBarStyle = ' bg-info ';
+            } else if (parseInt(session.percent) == 100){
+                percentBarStyle = ' bg-success ';
+            }
+
+            let animated_progress = '';
+            if (session.status_code === 1) {
+                animated_progress = ' progress-bar-animated '
+            }
+
+
             return (
                 <tr key={session.uuid}>
                     <td><Link to={"/session/" + session.uuid } >{session.url}</Link></td>
-                    <td>{session.uuid}</td>
+                    {/*<td>{session.uuid}</td>*/}
                     <td>{moment(session.timestamp).fromNow()}</td>
 
                     <td>{session.pages}</td>
                     <td>{session.queue}</td>
-                    <td>{session.percent}%</td>
-                    <td>{session.status}</td>
                     <td>
-                        <span onClick={this.retest}>Retest</span> | <span onClick={() => this.delete(session.uuid)}>Delete</span>
-
+                        <div className="progress">
+                          <div className={"progress-bar progress-bar-striped " + percentBarStyle + animated_progress} role="progressbar" style={percentStyle} aria-valuenow="{session.percent}" aria-valuemin="0" aria-valuemax="100">{session.percent}%</div>
+                        </div>
+                    </td>
+                    <td>{session.status}</td>
+                    <td className="text-right">
+                        <i className="fa fa-refresh" onClick={this.retest}></i> | <i className="fa fa-trash-o" onClick={() => this.delete(session.uuid)}></i>
+                        {/*<i className="fa fa-refresh" onClick={this.retest}></i> | <i className="fa fa-trash-o" onClick={() => this.delete(session.uuid)}></i> | <i className="fa fa-pause-circle" onClick={this.retest}></i> | <i className="fa fa-play-circle" onClick={() => this.delete(session.uuid)}></i> | <i className="fa fa-archive" onClick={() => this.delete(session.uuid)}></i>*/}
 
                     </td>
                 </tr>
@@ -190,7 +213,7 @@ class Sessions extends Component {
             )
         } else {
             return (
-                <div>
+                <div className="container">
                     <div className="jumbotron">
                           <h1 className="display-3">Sessions</h1>
                           <hr className="my-4" />
@@ -201,22 +224,27 @@ class Sessions extends Component {
                      <div className="card mt-5">
                         <div className="card-block">
                              <h2>Start crawl</h2>
-                            <label>
-                                Crawl URL
-                                <input type="text" ref={(el) => { this.textInput = el; }} />
-                            </label>
+                            <form>
+                                <div className="form-group">
+                                    <label htmlFor="crawl_url">Crawl URL</label>
+                                    <input type="text" className="form-control" id="crawl_url" placeholder="https://your-domain.com" ref={(el) => { this.textInput = el; }} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Crawl Depth </label>
+                                    <input type="number" className="form-control" id="crawl_depth" defaultValue={0} ref={(el) => { this.depthInput = el; }} />
+                                    <p id="passwordHelpBlock" className="form-text text-muted">
+                                      0 is just the crawl url and does not follow links on that page
+                                    </p>
+                                </div>
+                                <div className="form-group">
+                                    <label>Analyse performance</label>
+                                    <input type="checkbox" className="form-control" id="performance_review" ref={(el) => { this.performanceInput = el; }} />
 
-                            <label>
-                                Crawl Depth - 0 is just the crawl url and does not follow links on that page
-                                <input type="number" ref={(el) => { this.depthInput = el; }} />
-                            </label>
-
-                            <label>
-                                Analyse performance
-                                <input type="checkbox" ref={(el) => { this.performanceInput = el; }} />
-                            </label>
-
-                            <input type="submit" ref={(el) => { this.submit = el; }} onClick={this.startCrawl}/>
+                                </div>
+                                <div className="form-group">
+                                    <button type="submit" className="btn btn-primary" ref={(el) => { this.submit = el; }} onClick={this.startCrawl}>Start Crawl</button>
+                                </div>
+                            </form>
                         </div>
                      </div>
 
@@ -226,37 +254,37 @@ class Sessions extends Component {
 
 
 
-                             <table className="table table-striped">
+                             <table className="table table-striped table-responsive">
                             <thead className="thead-inverse">
                                 <tr>
-                                    <th>
+                                    <th >
                                         URL
                                     </th>
-                                    <th>
-                                        Session
-                                    </th>
+                                    {/*<th>*/}
+                                        {/*Session*/}
+                                    {/*</th>*/}
 
-                                    <th>
+                                    <th className="col-md-2">
                                         When
                                     </th>
 
-                                    <th>
+                                    <th className="col-md-1">
                                         Crawled
                                     </th>
 
-                                    <th>
+                                    <th className="col-md-1">
                                         Queue
                                     </th>
 
-                                    <th>
-                                        Completion %
+                                    <th className="col-md-3">
+                                        Completion
                                     </th>
 
-                                    <th>
+                                    <th className="col-md-2">
                                         Status
                                     </th>
 
-                                    <th>
+                                    <th className="col-md-1">
                                         Actions
                                     </th>
 
