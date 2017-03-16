@@ -4,12 +4,19 @@ from peewee import *
 from settings.settings import *
 
 
+STATUS_CHOICES = (
+    (1, 'Ready'),
+    (0, 'Paused'),
+)
+
+
 class Backlog(peewee.Model):
     url = peewee.CharField()
     session_uuid = peewee.CharField()
     starting_url = peewee.CharField()
     depth = peewee.IntegerField()
     performance = peewee.BooleanField()
+    status_code = peewee.IntegerField(default=1)
 
     class Meta:
         database = MySQLDatabase(
@@ -39,7 +46,8 @@ class BacklogItem(object):
             session_uuid=session_uuid,
             starting_url=starting_url,
             depth=depth,
-            performance=performance
+            performance=performance,
+            status_code=1
         )
         item.save()
 

@@ -3,6 +3,9 @@ import json
 import threading
 import uuid
 
+import time
+from random import randint
+
 from models.backlog import BacklogItem
 from models.sessions import SessionItem
 # from settings.settings import *
@@ -28,19 +31,66 @@ socketio = SocketIO(app)
 
 # Threaded processes (to handle queue backlog)
 
+# def backlog_watcher():
+#
+#     print "Backlog processing starting!"
+#
+#     backlog_item = BacklogItem()
+#
+#     # Process backlog while there are items for this session
+#     while backlog_item.count() > 0:
+#
+#         # Get first of backlog item for this session
+#         next_page = backlog_item.first()
+#
+#         # Slow things down a bit (throttle) - Nicer on the servers
+#         print "Preparing scan..."
+#         time.sleep(3)
+#
+#         print ("Scanning: %s") % next_page.url
+#
+#         # demo break condition
+#         num = randint(0,5)
+
+
+# self.analyse_pages(next_page.url,
+#                    next_page.depth, next_page.performance, False)
+#
+# backlog_item.pop_first_session(self.session_uuid)
+# self.visited_manager.upsert(next_page.url, self.session_uuid)
+# print ("Removed: %s from the backlog "
+#        "and added it to the visted list") % next_page.url
+#
+# self.update_session_stats(1)
+#
+# progress = session.session_progress(self.starting_url,
+#                                     self.session_uuid)
+# total_pages = progress['queue_count'] + progress['page_count']
+# print ("%i%% complete. %i/%i pages crawled") % (
+#     progress['percent'], progress['page_count'], total_pages)
+
+
+
+# # restart every 5 seconds
+# print "Queue is empty. Checking again in 5..."
+# time.sleep(5)
+# backlog_watcher()
+
+
 def start(url, session_uuid, depth, performance):
-    session = SessionItem()
-    session.create(url, session_uuid)
-
-    analyser = Analyser(url,
-                        url,
-                        session_uuid,
-                        depth,
-                        validator_options,
-                        performance)
-    resume_session = False
-
-    analyser.start(resume_session)
+    print "I will add a new session and item too the backlog to be processed"
+    # session = SessionItem()
+    # session.create(url, session_uuid)
+    #
+    # analyser = Analyser(url,
+    #                     url,
+    #                     session_uuid,
+    #                     depth,
+    #                     validator_options,
+    #                     performance)
+    # resume_session = False
+    #
+    # analyser.start(resume_session)
     # Socket IO and threads... :( unhappy face! TBC
     # socketio.send('results_updated', True)
     # socketio.emit('message')
@@ -60,9 +110,9 @@ def get_sessions():
         session_uuid = uuid.uuid1()
 
 
-        t = threading.Thread(target=start, args=(url, session_uuid, depth, performance))
-        t.daemon = True
-        t.start()
+        # t = threading.Thread(target=start, args=(url, session_uuid, depth, performance))
+        # t.daemon = True
+        # t.start()
 
 
         return jsonify(True)
@@ -139,4 +189,8 @@ def catch_all(path):
 
 
 if __name__ == '__main__':
+    #backlog_watcher = threading.Thread(target=backlog_watcher())
+    #backlog_watcher.daemon = True
+    #backlog_watcher.start()
+
     socketio.run(app, debug=True)

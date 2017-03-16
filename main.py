@@ -75,7 +75,7 @@ if __name__ == "__main__":
         resume_session = True
 
     session = SessionItem()
-    session.create(args.url, session_uuid)
+    session.create(args.url, session_uuid, args.depth)
 
     print ("Session UUID: %s") % session_uuid
 
@@ -83,7 +83,6 @@ if __name__ == "__main__":
     analyser = Analyser(args.url,
                         args.url,
                         session_uuid,
-                        args.depth,
                         validator_options,
                         args.performance)
 

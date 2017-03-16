@@ -256,35 +256,35 @@ class Sessions extends Component {
 
                              <table className="table table-striped table-responsive">
                             <thead className="thead-inverse">
-                                <tr>
-                                    <th >
+                                <tr className="row">
+                                    <th className="col-2">
                                         URL
                                     </th>
                                     {/*<th>*/}
                                         {/*Session*/}
                                     {/*</th>*/}
 
-                                    <th className="col-md-2">
+                                    <th className="col-2">
                                         When
                                     </th>
 
-                                    <th className="col-md-1">
+                                    <th className="col-1">
                                         Crawled
                                     </th>
 
-                                    <th className="col-md-1">
+                                    <th className="col-1">
                                         Queue
                                     </th>
 
-                                    <th className="col-md-3">
+                                    <th className="col-3">
                                         Completion
                                     </th>
 
-                                    <th className="col-md-2">
+                                    <th className="col-2">
                                         Status
                                     </th>
 
-                                    <th className="col-md-1">
+                                    <th className="col-1">
                                         Actions
                                     </th>
 

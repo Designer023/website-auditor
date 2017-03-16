@@ -8,7 +8,8 @@ STATUS_CHOICES = (
     (0, 'Initialised'),
     (1, 'Processing'),
     (2, 'Complete'),
-    (3, 'Archived')
+    (3, 'Archived'),
+    (4, 'Paused'),
 )
 
 class Session(peewee.Model):
@@ -18,6 +19,7 @@ class Session(peewee.Model):
     queued = peewee.IntegerField(default=0)
     status_code = peewee.IntegerField(default=0)
     timestamp = peewee.TimestampField()
+    max_depth = peewee.IntegerField(default=0)
 
     class Meta:
         database = MySQLDatabase(
@@ -36,7 +38,7 @@ except:
 
 class SessionItem(object):
 
-    def add(self, starting_url, session_uuid):
+    def add(self, starting_url, session_uuid, max_depth):
 
         ts = time.time()
 
@@ -46,11 +48,12 @@ class SessionItem(object):
             pages=0,
             queued=0,
             status=0,
-            timestamp=ts
+            timestamp=ts,
+            max_depth=max_depth
             )
         session.save()
 
-    def create(self, starting_url, session_uuid):
+    def create(self, starting_url, session_uuid, max_depth):
         try:
             # Update existing
             _ = Session.get(
@@ -60,7 +63,7 @@ class SessionItem(object):
             # If it exists then skip it
         except:
             # Create new status entry
-            self.add(starting_url, session_uuid)
+            self.add(starting_url, session_uuid, max_depth)
 
     def delete(self, session_uuid):
         session = Session.get(
@@ -68,6 +71,18 @@ class SessionItem(object):
         )
 
         session.delete_instance()
+
+
+    def get_session_data(self, session_uuid):
+        session = Session.get(
+            Session.session_uuid == session_uuid
+        )
+
+        session_data = {}
+        session_data['max_depth'] = session.max_depth
+        session_data['session_uuid'] = session.session_uuid
+
+        return session_data
 
     def update_stats(self, starting_url, session_uuid,
                      queue_count, page_count, status_code):

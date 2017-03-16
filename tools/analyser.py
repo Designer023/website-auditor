@@ -17,18 +17,15 @@ class Analyser(object):
     url = ''
     starting_url = ''
     session_uuid = ''
-    max_depth = 0
     validator_options = {}
     analyse_performance = False
     visited_manager = VisitedItem()
 
     def __init__(self, url, starting_url, session_uuid,
-                 max_depth, validator_options, analyse_performance):
-        # type: (object, object, object, object, object, object) -> object
+                 validator_options, analyse_performance):
         self.url = url
         self.starting_url = starting_url
         self.session_uuid = session_uuid
-        self.max_depth = max_depth
         self.validator_options = validator_options
         self.analyse_performance = analyse_performance
 
@@ -57,6 +54,9 @@ class Analyser(object):
         session = SessionItem()
         session.update_queue(self.starting_url,
                              self.session_uuid, backlog_count)
+
+        session_data =  session.get_session_data(self.session_uuid)
+        session_max_depth = session_data['max_depth']
 
         parsed_html = HTMLImporter(url)
         parsed_html.import_html()
@@ -112,7 +112,7 @@ class Analyser(object):
             depth += 1
 
             # If this new depth doesn't exceed the max the process new links
-            if depth <= self.max_depth:
+            if depth <= session_max_depth:
                 for link in page_data['page_links']['internal']:
                     # clean base url and append it to the links
                     url_to_test = "%s%s" % (self.starting_url
@@ -152,9 +152,12 @@ class Analyser(object):
         # Process backlog while there are items for this session
         while backlog_item.count_session(self.session_uuid) > 0:
 
+            session_data = session.get_session_data(self.session_uuid)
+            session_max_depth = session_data['max_depth']
+
             # Get first of backlog item for this session
             next_page = backlog_item.first_session(self.session_uuid)
-            if next_page.depth > self.max_depth:
+            if next_page.depth > session_max_depth:
                 break
 
             # Slow things down a bit (throttle) - Nicer on the servers
@@ -182,3 +185,4 @@ class Analyser(object):
         self.update_session_stats(2)
 
         print "Analysis complete"
+
