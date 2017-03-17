@@ -17,6 +17,7 @@ class Backlog(peewee.Model):
     depth = peewee.IntegerField()
     performance = peewee.BooleanField()
     status_code = peewee.IntegerField(default=1)
+    validate_w3c = peewee.IntegerField(default=0)
 
     class Meta:
         database = MySQLDatabase(
@@ -70,7 +71,7 @@ class BacklogItem(object):
         data = Backlog.select().get()
         return data
 
-    def popFirst(self):
+    def pop_first(self):
         first = Backlog.select().get()
         first.delete_instance()
 

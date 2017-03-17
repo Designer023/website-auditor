@@ -20,6 +20,7 @@ class Session(peewee.Model):
     status_code = peewee.IntegerField(default=0)
     timestamp = peewee.TimestampField()
     max_depth = peewee.IntegerField(default=0)
+    validate_w3c = peewee.IntegerField(default=0)
 
     class Meta:
         database = MySQLDatabase(
@@ -84,6 +85,13 @@ class SessionItem(object):
 
         return session_data
 
+    def get_session_object(self, session_uuid):
+        session = Session.get(
+            Session.session_uuid == session_uuid
+        )
+
+        return session
+
     def update_stats(self, starting_url, session_uuid,
                      queue_count, page_count, status_code):
         session = Session.get(
@@ -134,10 +142,14 @@ class SessionItem(object):
 
         pages = session.pages
         queued = session.queued
+        total = pages + queued
         progress = {}
         progress['percent'] = 100 / float(pages + queued) * float(pages)
         progress['page_count'] = pages
         progress['queue_count'] = queued
+        progress['total_pages'] = total
+        progress['fraction'] = ("%i/%i") % (pages, total)
+        session['max_depth'] = session.max_depth
 
         return progress
 
@@ -165,6 +177,7 @@ class SessionItem(object):
             session['status'] = status_dict[item.status_code]
             session['status_code'] = item.status_code
             session['timestamp'] = item.timestamp
+            session['max_depth'] = item.max_depth
 
             total_items = item.pages + item.queued
             try:

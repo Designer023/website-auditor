@@ -86,6 +86,8 @@ if __name__ == "__main__":
                         validator_options,
                         args.performance)
 
+    analyser.process_backlog()
+
     # Start the analysis
     if args.crawl is True:
         analyser.start(resume_session)

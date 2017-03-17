@@ -186,3 +186,131 @@ class Analyser(object):
 
         print "Analysis complete"
 
+
+
+    def process_page(self, backlog_item, session_item):
+        print ("Analysing %s for %s") % (backlog_item.url, session_item.session_uuid)
+
+        session_manager = SessionItem()
+        backlog_manager = BacklogItem()
+        visited_manager = VisitedItem()
+        page_manager = PageItem()
+
+        parsed_html = HTMLImporter(backlog_item.url)
+        parsed_html.import_html()
+
+        if not parsed_html.error:
+
+            page_data = {}
+
+            # Grab data from the context of the processing session
+            page_data['starting_url'] = session_item.starting_url
+            page_data['session_uuid'] = session_item.session_uuid
+            page_data['url'] = backlog_item.url
+
+            # Response headers
+            page_data['header'] = parsed_html.response_header
+
+
+            # Always use the default HTML validator
+            html_validator = Validator(self.validator_options)
+            page_data['html_errors'] = html_validator.validate_html(
+                parsed_html.html_data)
+
+            # Custom Validators
+            # W3C - HTML
+            if backlog_item.validate_w3c is True:
+                page_data['w3c'] = html_validator.validate_w3c(parsed_html.html_data)
+            else:
+                page_data['w3c'] = None
+
+            # Page meta tags
+            meta_parser = MetaParser()
+            page_data['page_meta'] = meta_parser.parse_meta(parsed_html.html_data)
+            page_data['title'] = meta_parser.parse_title(parsed_html.html_data)
+
+            # Links
+            link_parser = LinkParser()
+            page_data['page_links'] = link_parser.parse_links(parsed_html.html_data,backlog_item.url)
+
+            if backlog_item.performance is True:
+                print "Analysing page with YSlow. This will take a few seconds..."
+                page_data['yslow_results'] = generate_yslow(backlog_item.url)
+                print "Page analysis complete"
+            else:
+                page_data['yslow_results'] = None
+
+            # Save Analysed page to DB
+            page_manager.upsert(page_data)
+
+            # Update session stats
+            complete_count = page_manager.count_session(session_item.session_uuid)
+            session_manager.update_pages(session_item.starting_url, session_item.session_uuid,
+                                 complete_count)
+
+            # Loop on the next set of links 1 deeper
+            new_depth = backlog_item.depth + 1
+
+            # If this new depth doesn't exceed the max the process new links
+            if new_depth <= session_item.max_depth:
+                for link in page_data['page_links']['internal']:
+                    # clean base url and append it to the links
+                    url_to_test = "%s%s" % (self.starting_url.rstrip('/'), link)
+
+                    # Check if the item has already been scanned this session in the visted_log
+                    visited_this_session = visited_manager.visited_this_session(url_to_test, session_item.session_uuid)
+
+                    # If its not in the visited list then add it to the queue!
+                    if visited_this_session is False:
+
+                        backlog_manager.upsert(
+                            url_to_test,
+                            session_item.starting_url,
+                            session_item.session_uuid,
+                            new_depth,
+                            backlog_item.performance
+                        )
+
+        else:
+            print "There was a problem importing the HTML. Try again later :'("
+
+
+    def process_backlog(self):
+        session_manager = SessionItem()
+        backlog_manager = BacklogItem()
+        visited_manager = VisitedItem()
+        page_manager = PageItem()
+
+
+        while backlog_manager.count() > 0:
+            print "Preparing scan..."
+            time.sleep(3)
+
+            next_backlog_item = backlog_manager.first()
+            backlog_item_session_uuid = next_backlog_item.session_uuid
+            backlog_item_url = next_backlog_item.url
+
+            session_item = session_manager.get_session_object(backlog_item_session_uuid)
+
+            #print ("Scanning: %s for session: %s") % (backlog_item_url, backlog_item_session_uuid)
+
+            self.process_page(next_backlog_item, session_item)
+
+            backlog_manager.pop_first()
+            visited_manager.upsert(backlog_item_url, backlog_item_session_uuid)
+            print ("Removed: %s from the backlog and added it to the visted list") % backlog_item_url
+
+            # Update this session and output progress
+            complete_count = page_manager.count_session(backlog_item_session_uuid)
+            backlog_count = backlog_manager.count_session(backlog_item_session_uuid)
+
+            session_manager.update_stats(
+                session_item.starting_url,
+                session_item.session_uuid,
+                backlog_count,
+                complete_count,
+                1 # 1 processing, 2 complete
+            )
+
+            progress = session_manager.session_progress(session_item.starting_url, session_item.session_uuid)
+            print ("%i%% complete. %s pages crawled") % ( progress['percent'], progress['fraction'])

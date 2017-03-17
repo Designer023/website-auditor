@@ -192,6 +192,7 @@ class Sessions extends Component {
 
                     <td>{session.pages}</td>
                     <td>{session.queue}</td>
+                    <td>{session.max_depth}</td>
                     <td>
                         <div className="progress">
                           <div className={"progress-bar progress-bar-striped " + percentBarStyle + animated_progress} role="progressbar" style={percentStyle} aria-valuenow="{session.percent}" aria-valuemin="0" aria-valuemax="100">{session.percent}%</div>
@@ -256,7 +257,7 @@ class Sessions extends Component {
 
                              <table className="table table-striped table-responsive">
                             <thead className="thead-inverse">
-                                <tr className="row">
+                                <tr>
                                     <th className="col-2">
                                         URL
                                     </th>
@@ -276,7 +277,11 @@ class Sessions extends Component {
                                         Queue
                                     </th>
 
-                                    <th className="col-3">
+                                    <th className="col-1">
+                                        Crawl&nbsp;depth
+                                    </th>
+
+                                    <th className="col-2">
                                         Completion
                                     </th>
 
@@ -287,7 +292,6 @@ class Sessions extends Component {
                                     <th className="col-1">
                                         Actions
                                     </th>
-
 
                                 </tr>
                             </thead>
