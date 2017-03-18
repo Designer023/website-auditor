@@ -1,4 +1,5 @@
 import time
+import json
 
 from models.page import PageItem
 from models.backlog import BacklogItem
@@ -11,23 +12,11 @@ from .meta import MetaParser
 from .validation import Validator
 from .yslow import generate_yslow
 
-
 class Analyser(object):
-
-    url = ''
-    starting_url = ''
-    session_uuid = ''
     validator_options = {}
-    analyse_performance = False
-    visited_manager = VisitedItem()
 
-    def __init__(self, url, starting_url, session_uuid,
-                 validator_options, analyse_performance):
-        self.url = url
-        self.starting_url = starting_url
-        self.session_uuid = session_uuid
+    def __init__(self, validator_options):
         self.validator_options = validator_options
-        self.analyse_performance = analyse_performance
 
     def update_session_stats(self, status_code):
         session = SessionItem()
@@ -275,14 +264,13 @@ class Analyser(object):
             print "There was a problem importing the HTML. Try again later :'("
 
 
-    def process_backlog(self):
+    def process_backlog(self, current_session_uuid = None):
         session_manager = SessionItem()
         backlog_manager = BacklogItem()
         visited_manager = VisitedItem()
         page_manager = PageItem()
 
-
-        while backlog_manager.count() > 0:
+        while backlog_manager.count(current_session_uuid) > 0:
             print "Preparing scan..."
             time.sleep(3)
 
@@ -296,13 +284,19 @@ class Analyser(object):
 
             self.process_page(next_backlog_item, session_item)
 
-            backlog_manager.pop_first()
+            backlog_manager.pop_first(current_session_uuid)
             visited_manager.upsert(backlog_item_url, backlog_item_session_uuid)
             print ("Removed: %s from the backlog and added it to the visted list") % backlog_item_url
 
             # Update this session and output progress
             complete_count = page_manager.count_session(backlog_item_session_uuid)
             backlog_count = backlog_manager.count_session(backlog_item_session_uuid)
+
+            if backlog_count == 0:
+                # Set session to complete if there are no more in the queue!
+                status_code = 2 # Complete - no backlog
+            else:
+                status_code = 1 # In progress still!
 
             session_manager.update_stats(
                 session_item.starting_url,

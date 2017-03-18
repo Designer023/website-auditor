@@ -149,7 +149,7 @@ class SessionItem(object):
         progress['queue_count'] = queued
         progress['total_pages'] = total
         progress['fraction'] = ("%i/%i") % (pages, total)
-        session['max_depth'] = session.max_depth
+        progress['max_depth'] = session.max_depth
 
         return progress
 

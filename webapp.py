@@ -27,54 +27,25 @@ app = Flask(__name__, static_url_path="/static", static_folder="static")
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
+backlog_thread = None
+
 # Setup the routes for Flask
 
 # Threaded processes (to handle queue backlog)
 
-# def backlog_watcher():
-#
-#     print "Backlog processing starting!"
-#
-#     backlog_item = BacklogItem()
-#
-#     # Process backlog while there are items for this session
-#     while backlog_item.count() > 0:
-#
-#         # Get first of backlog item for this session
-#         next_page = backlog_item.first()
-#
-#         # Slow things down a bit (throttle) - Nicer on the servers
-#         print "Preparing scan..."
-#         time.sleep(3)
-#
-#         print ("Scanning: %s") % next_page.url
-#
-#         # demo break condition
-#         num = randint(0,5)
+def backlog_watcher():
+
+    print "Backlog processing starting!"
+
+    analyser = Analyser(validator_options)
+    analyser.process_backlog()
 
 
-# self.analyse_pages(next_page.url,
-#                    next_page.depth, next_page.performance, False)
-#
-# backlog_item.pop_first_session(self.session_uuid)
-# self.visited_manager.upsert(next_page.url, self.session_uuid)
-# print ("Removed: %s from the backlog "
-#        "and added it to the visted list") % next_page.url
-#
-# self.update_session_stats(1)
-#
-# progress = session.session_progress(self.starting_url,
-#                                     self.session_uuid)
-# total_pages = progress['queue_count'] + progress['page_count']
-# print ("%i%% complete. %i/%i pages crawled") % (
-#     progress['percent'], progress['page_count'], total_pages)
+    print "Queue done, take 5!.."
+    time.sleep(5)
+    backlog_watcher()
 
 
-
-# # restart every 5 seconds
-# print "Queue is empty. Checking again in 5..."
-# time.sleep(5)
-# backlog_watcher()
 
 
 def start(url, session_uuid, depth, performance):
@@ -189,8 +160,11 @@ def catch_all(path):
 
 
 if __name__ == '__main__':
-    #backlog_watcher = threading.Thread(target=backlog_watcher())
-    #backlog_watcher.daemon = True
-    #backlog_watcher.start()
+    global backlog_thread
+    # backlog_thread = threading.Thread(target=backlog_watcher())
+    # backlog_thread.daemon = True
+    # backlog_thread.start()
+    if backlog_thread is None:
+        backlog_thread = socketio.start_background_task(target=backlog_watcher)
 
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, use_reloader=False)

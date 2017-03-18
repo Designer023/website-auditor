@@ -64,16 +64,27 @@ class BacklogItem(object):
             # Create new status entry
             self.add(url, starting_url, session_uuid, depth, performance)
 
-    def count(self):
-        return Backlog.select().count()
+    def count(self, session_uuid = None):
+        if session_uuid is not None:
+            print "Checking session count..."
+            return Backlog.filter(Backlog.session_uuid == session_uuid).count()
+        else:
+            return Backlog.select().count()
 
-    def first(self):
-        data = Backlog.select().get()
-        return data
+    def first(self, session_uuid = None):
+        if session_uuid is not None:
+            return Backlog.filter(Backlog.session_uuid == session_uuid).get()
+        else:
+            return Backlog.select().get()
 
-    def pop_first(self):
-        first = Backlog.select().get()
-        first.delete_instance()
+    def pop_first(self, session_uuid = None):
+        if session_uuid is not None:
+            first = Backlog.filter(Backlog.session_uuid == session_uuid).get()
+            first.delete_instance()
+        else:
+            first = Backlog.select().get()
+            first.delete_instance()
+
 
     def count_session(self, session_uuid):
         return Backlog.filter(Backlog.session_uuid == session_uuid).count()

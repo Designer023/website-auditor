@@ -2,6 +2,7 @@ import argparse
 import json
 import uuid
 
+from models.backlog import BacklogItem
 from models.sessions import SessionItem
 from tools.analyser import Analyser
 from tools.reporter import Reporter
@@ -74,23 +75,20 @@ if __name__ == "__main__":
         session_uuid = args.session
         resume_session = True
 
-    session = SessionItem()
-    session.create(args.url, session_uuid, args.depth)
-
     print ("Session UUID: %s") % session_uuid
 
-    # Start the scanning and analysing
-    analyser = Analyser(args.url,
-                        args.url,
-                        session_uuid,
-                        validator_options,
-                        args.performance)
-
-    analyser.process_backlog()
+    analyser = Analyser(validator_options)
 
     # Start the analysis
     if args.crawl is True:
-        analyser.start(resume_session)
+        # Create a session ONLY if we are crawling!
+        session_manager = SessionItem()
+        session_manager.create(args.url, session_uuid, args.depth)
+        # Add the starting link to the session so there is a backlog to process
+        backlog_manager = BacklogItem()
+        backlog_manager.add(args.url, args.url, session_uuid, args.depth, args.performance)
+        # Process the backlog for THIS session when running the main script
+        analyser.process_backlog(session_uuid)
 
     # Reporting
     if args.report is True:
