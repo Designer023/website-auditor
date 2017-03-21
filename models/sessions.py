@@ -176,8 +176,10 @@ class SessionItem(object):
             session['queue'] = item.queued
             session['status'] = status_dict[item.status_code]
             session['status_code'] = item.status_code
-            session['timestamp'] = item.timestamp
+            session['timestamp'] = item.timestamp.isoformat()
             session['max_depth'] = item.max_depth
+
+            print item.timestamp.isoformat()
 
             total_items = item.pages + item.queued
             try:

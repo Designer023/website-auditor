@@ -141,7 +141,7 @@ class SessionTable extends Component {
                 <tr key={session.uuid}>
                     <td><Link to={"/session/" + session.uuid } >{session.url}</Link></td>
                     {/*<td>{session.uuid}</td>*/}
-                    <td>{moment(session.timestamp).fromNow()}</td>
+                    <td>{moment(session.timestamp, "YYYY-MM-DDTHH:mm:ss.SSS[Z]").fromNow()}</td>
 
                     <td>{session.pages}</td>
                     <td>{session.queue}</td>
