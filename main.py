@@ -86,7 +86,8 @@ if __name__ == "__main__":
         session_manager.create(args.url, session_uuid, args.depth)
         # Add the starting link to the session so there is a backlog to process
         backlog_manager = BacklogItem()
-        backlog_manager.add(args.url, args.url, session_uuid, args.depth, args.performance)
+        # NOTE Depth is always 0 for the starting url!
+        backlog_manager.add(args.url, args.url, session_uuid, 0, args.performance)
         # Process the backlog for THIS session when running the main script
         analyser.process_backlog(session_uuid)
 

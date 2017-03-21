@@ -46,7 +46,8 @@ backlog_thread = None
 #     backlog_watcher()
 
 
-
+def str2bool(v):
+  return v.lower() in ("yes", "true", "t", "1")
 
 def create_new_session(url, session_uuid, depth, performance):
     print "I will add a new session and item too the backlog to be processed"
@@ -55,8 +56,13 @@ def create_new_session(url, session_uuid, depth, performance):
     session_manager.create(url, session_uuid, depth)
     # Add the starting link to the session so there is a backlog to process
 
+    p = str2bool(performance)
+    print type(p)
+    print p
+
     backlog_manager = BacklogItem()
-    backlog_manager.add(url, url, session_uuid, depth, performance)
+    # Note stating depth = 0
+    backlog_manager.add(url, url, session_uuid, 0, p)
 
 
 

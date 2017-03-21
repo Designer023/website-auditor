@@ -244,7 +244,7 @@ class Analyser(object):
             if new_depth <= session_item.max_depth:
                 for link in page_data['page_links']['internal']:
                     # clean base url and append it to the links
-                    url_to_test = "%s%s" % (self.starting_url.rstrip('/'), link)
+                    url_to_test = "%s%s" % (session_item.starting_url.rstrip('/'), link)
 
                     # Check if the item has already been scanned this session in the visted_log
                     visited_this_session = visited_manager.visited_this_session(url_to_test, session_item.session_uuid)
@@ -274,7 +274,7 @@ class Analyser(object):
             print "Preparing scan..."
             time.sleep(3)
 
-            next_backlog_item = backlog_manager.first()
+            next_backlog_item = backlog_manager.first(current_session_uuid)
             backlog_item_session_uuid = next_backlog_item.session_uuid
             backlog_item_url = next_backlog_item.url
 
