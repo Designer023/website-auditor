@@ -33,38 +33,32 @@ backlog_thread = None
 
 # Threaded processes (to handle queue backlog)
 
-def backlog_watcher():
-
-    print "Backlog processing starting!"
-
-    analyser = Analyser(validator_options)
-    analyser.process_backlog()
-
-
-    print "Queue done, take 5!.."
-    time.sleep(5)
-    backlog_watcher()
-
-
+# def backlog_watcher():
+#
+#     print "Backlog processing starting!"
+#
+#     analyser = Analyser(validator_options)
+#     analyser.process_backlog()
+#
+#
+#     print "Queue done, take 5!.."
+#     time.sleep(5)
+#     backlog_watcher()
 
 
-def start(url, session_uuid, depth, performance):
+
+
+def create_new_session(url, session_uuid, depth, performance):
     print "I will add a new session and item too the backlog to be processed"
-    # session = SessionItem()
-    # session.create(url, session_uuid)
-    #
-    # analyser = Analyser(url,
-    #                     url,
-    #                     session_uuid,
-    #                     depth,
-    #                     validator_options,
-    #                     performance)
-    # resume_session = False
-    #
-    # analyser.start(resume_session)
-    # Socket IO and threads... :( unhappy face! TBC
-    # socketio.send('results_updated', True)
-    # socketio.emit('message')
+
+    session_manager = SessionItem()
+    session_manager.create(url, session_uuid, depth)
+    # Add the starting link to the session so there is a backlog to process
+
+    backlog_manager = BacklogItem()
+    backlog_manager.add(url, url, session_uuid, depth, performance)
+
+
 
 # API
 
@@ -72,19 +66,17 @@ def start(url, session_uuid, depth, performance):
 @app.route('/api/v1.0/auditor/sessions', methods=['GET', 'POST'])
 def get_sessions():
     if request.method == 'POST':
+
         form_data = request.form
+
         url = form_data['url']
-        depth = form_data['depth']
+        depth = int(form_data['depth'])
         performance = form_data['performance']
 
         # Generate a uniquie timestamp based on device and time /
         session_uuid = uuid.uuid1()
 
-
-        # t = threading.Thread(target=start, args=(url, session_uuid, depth, performance))
-        # t.daemon = True
-        # t.start()
-
+        create_new_session(url, session_uuid, depth, performance)
 
         return jsonify(True)
     else:
@@ -146,7 +138,7 @@ def get_detail_for_page(page_id):
 
     return jsonify(data)
 
-# CATCH ALL FOR FRONTEND - Handled by reaact router unless caught above!
+# CATCH ALL FOR FRONTEND - Handled by react router unless caught above!
 
 @app.route('/')
 def root():
@@ -160,11 +152,11 @@ def catch_all(path):
 
 
 if __name__ == '__main__':
-    global backlog_thread
+    # global backlog_thread
     # backlog_thread = threading.Thread(target=backlog_watcher())
     # backlog_thread.daemon = True
     # backlog_thread.start()
-    if backlog_thread is None:
-        backlog_thread = socketio.start_background_task(target=backlog_watcher)
+    # if backlog_thread is None:
+    #     backlog_thread = socketio.start_background_task(target=backlog_watcher)
 
-    socketio.run(app, debug=True, use_reloader=False)
+    socketio.run(app, debug=True, use_reloader=True)
