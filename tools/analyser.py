@@ -303,7 +303,7 @@ class Analyser(object):
                 session_item.session_uuid,
                 backlog_count,
                 complete_count,
-                1 # 1 processing, 2 complete
+                status_code
             )
 
             progress = session_manager.session_progress(session_item.starting_url, session_item.session_uuid)
