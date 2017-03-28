@@ -47,7 +47,7 @@ backlog_thread = None
 
 
 def str2bool(v):
-  return v.lower() in ("yes", "true", "t", "1")
+    return v.lower() in ("yes", "true", "t", "1")
 
 def create_new_session(url, session_uuid, depth, performance):
     print "I will add a new session and item too the backlog to be processed"
@@ -56,15 +56,25 @@ def create_new_session(url, session_uuid, depth, performance):
     session_manager.create(url, session_uuid, depth)
     # Add the starting link to the session so there is a backlog to process
 
-    p = str2bool(performance)
-    print type(p)
-    print p
+    p_as_bool = str2bool(performance)
 
     backlog_manager = BacklogItem()
     # Note stating depth = 0
-    backlog_manager.add(url, url, session_uuid, 0, p)
+    backlog_manager.add(url, url, session_uuid, 0, p_as_bool)
 
+def retest_url(url, session_uuid, performance):
+    print "I will add a new page test for a single page"
 
+    depth = 0 # Retest is only on the current URL
+    session_manager = SessionItem()
+    session_manager.create(url, session_uuid, depth)
+    # Add the starting link to the session so there is a backlog to process
+
+    p_as_bool = str2bool(performance)
+
+    backlog_manager = BacklogItem()
+    # Note stating depth = 0
+    backlog_manager.add(url, url, session_uuid, 0, p_as_bool)
 
 # API
 
@@ -132,17 +142,30 @@ def get_all_results(session_uuid):
 
     return jsonify(pages_list)
 
-@app.route('/api/v1.0/auditor/detail/<path:page_id>', methods=['GET'])
+@app.route('/api/v1.0/auditor/detail/<path:page_id>', methods=['GET', 'POST'])
 def get_detail_for_page(page_id):
+    print "Hello"
+    if request.method == 'POST':
+        form_data = request.form
 
-    pages = PageItem()
+        url = form_data['url']
+        performance = form_data['performance']
+        uuid = form_data['uuid']
 
-    page_data = pages.get_page_data(page_id)
+        # print form_data
+        retest_url(url,uuid,performance)
 
-    data = {}
-    data['data'] = page_data
+        return jsonify(True)
 
-    return jsonify(data)
+    if request.method == 'GET':
+        pages = PageItem()
+
+        page_data = pages.get_page_data(page_id)
+
+        data = {}
+        data['data'] = page_data
+
+        return jsonify(data)
 
 # CATCH ALL FOR FRONTEND - Handled by react router unless caught above!
 

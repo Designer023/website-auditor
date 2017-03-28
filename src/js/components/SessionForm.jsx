@@ -31,8 +31,6 @@ class SessionForm extends Component {
 
             };
 
-            console.log(post_data);
-
             let crawl_end_point = '/api/v1.0/auditor/sessions';
 
             $.ajax({

@@ -23,12 +23,35 @@ class Page extends Component {
         }
 
         this.getData = this.getData.bind(this);
+        this.retestPage = this.retestPage.bind(this)
     }
 
     componentDidMount() {
         this.getData();
     }
 
+
+    retestPage() {
+
+        let queue_end_point = '/api/v1.0/auditor/detail/' + this.props.params.page_id;
+
+        let post_data = {
+            url: this.state.data.url,
+            performance: false,
+            uuid: this.props.params.session_id
+        };
+
+        $.ajax({
+            type: 'POST',
+            data: post_data,
+            url: queue_end_point,
+            success: function (data) {
+
+                console.log(data)
+
+            }.bind(this)
+        });
+    }
 
 
     getData() {
@@ -79,7 +102,7 @@ class Page extends Component {
 
                          <h3 className="lead">URL: <a href={this.state.data.url} target="_blank">{this.state.data.url}</a></h3>
                          <h4>Session uuid: <Link to={"/session/" + this.props.params.session_id } >{this.props.params.session_id}</Link></h4>
-
+                         <span className="btn btn-primary" onClick={this.retestPage}>Restest</span>
                     </div>
 
 
