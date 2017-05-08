@@ -102,7 +102,24 @@ class Page extends Component {
 
                          <h3 className="lead">URL: <a href={this.state.data.url} target="_blank">{this.state.data.url}</a></h3>
                          <h4>Session uuid: <Link to={"/session/" + this.props.params.session_id } >{this.props.params.session_id}</Link></h4>
-                         <span className="btn btn-primary" onClick={this.retestPage}>Restest</span>
+
+                         <div className="form-inline">
+
+                             <label className="mr-sm-2" htmlFor="validator_type">Validator</label>
+                              <select className="custom-select mb-2 mr-sm-2 mb-sm-0" id="validator_type">
+                                <option value="default" defaultValue>Default</option>
+                                <option value="w3c">W3C</option>
+                              </select>
+
+                             <label className="mr-sm-2" htmlFor="inlineFormCustomSelect">Performance</label>
+                              <select className="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect">
+                                <option value="none" defaultValue>None</option>
+                                <option value="yslow">YSlow</option>
+                              </select>
+
+
+                            <span className="btn btn-primary" onClick={this.retestPage}>Restest</span>
+                         </div>
                     </div>
 
 
@@ -118,13 +135,11 @@ class Page extends Component {
                             <span
                                 className="navbar-toggler-icon"></span>
                         </button>
-                        <a className="navbar-brand" href="/">Page</a>
+                        <span className="navbar-brand">Menu</span>
                         <div className="collapse navbar-collapse"
                              id="navbarNav">
                             <ul className="navbar-nav">
                                 <li className="nav-item">
-                                    {/*<NavLink className="nav-link" to={"/page/" + this.props.params.page_id } >Overview</NavLink>*/}
-
                                     <Link className="nav-link"
                                           to={"/session/" + this.props.params.session_id + "/page/" + this.props.params.page_id + '/overview/'}>Overview</Link>
                                 </li>

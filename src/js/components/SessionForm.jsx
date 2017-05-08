@@ -7,6 +7,9 @@ class SessionForm extends Component {
 
     constructor(props) {
         super(props);
+
+        //let crawl_ajax;
+
         this.startCrawl = this.startCrawl.bind(this);
     }
 
@@ -31,7 +34,13 @@ class SessionForm extends Component {
 
             };
 
-            let crawl_end_point = '/api/v1.0/auditor/sessions';
+            // let request = new Request('/api/v1.0/auditor/sessions', {
+            //     method: 'POST',
+            //     body: post_data
+            // });
+            //
+            // fetch(request).then(function(res){ return res.json(); }).then(function(data){ alert( JSON.stringify( data ) ) })
+
 
             $.ajax({
                 type: 'POST',
@@ -50,6 +59,9 @@ class SessionForm extends Component {
         }
     }
 
+    componentWillUnmount() {
+        // crawl_ajax.abort();
+    }
 
     render() {
 

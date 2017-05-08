@@ -66,8 +66,8 @@ def retest_url(url, session_uuid, performance):
     print "I will add a new page test for a single page"
 
     depth = 0 # Retest is only on the current URL
-    session_manager = SessionItem()
-    session_manager.create(url, session_uuid, depth)
+    #session_manager = SessionItem()
+    #session_manager.create(url, session_uuid, depth)
     # Add the starting link to the session so there is a backlog to process
 
     p_as_bool = str2bool(performance)
@@ -155,7 +155,12 @@ def get_detail_for_page(page_id):
         # print form_data
         retest_url(url,uuid,performance)
 
-        return jsonify(True)
+        ret = jsonify(True)
+        resp = Response(response=ret,
+                        status=200,
+                        mimetype="application/json")
+
+        return resp
 
     if request.method == 'GET':
         pages = PageItem()
